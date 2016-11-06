@@ -20,4 +20,5 @@ galaxy_info:
     - 8
   categories:
   - web
-dependencies: []
+dependencies:
+  - geerlingguy.java

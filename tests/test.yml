@@ -8,10 +8,30 @@
     - name: Update apt cache (if distro is debian based)
       apt: update_cache=yes
       when: ansible_os_family == 'Debian'
+      tags: [pre]
 
     - name: Install cryptography module (if distro is debian)
       pip: name=cryptography state=present
       when: ansible_distribution == 'Debian'
+      tags: [pre]
+
+  post_tasks:
+    - name: Check firefox install
+      shell: firefox --version
+      changed_when: False
+      tags: [post]
+
+    - name: Remove selenium test if exists
+      file: path=/tmp/selenium_status state=absent
+      changed_when: False
+      tags: [post]
+
+    - name: Test selenium server
+      get_url:
+        url: "http://localhost:4444/wd/hub/status"
+        dest: "/tmp/selenium_status"
+      changed_when: False
+      tags: [post]
 
   roles:
     - role_under_test

@@ -29,16 +29,13 @@ script:
   - 'sudo docker run --detach --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} ${distro} "${init}" > "${container_id}"'
 
   # Install deps
-  # - ' sudo docker exec --tty "816ba159f7937f068df3dfaf0a21c07d4457c4e3523a3c04b1c9a8d04c7fc653" env TERM=xterm ansible-galaxy install -r /etc/ansible/roles/role_under_test/tests/requirements.yml'
+  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-galaxy install -r /etc/ansible/roles/role_under_test/tests/requirements.yml'
 
   # Ansible syntax check.
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml --syntax-check'
 
   # Test role.
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml'
-
-  # Test firefox
-  - 'sudo docker exec --tty "$(cat ${container_id})" firefox --version'
 
   # Test role idempotence.
   - idempotence=$(mktemp)
