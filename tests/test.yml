@@ -19,12 +19,8 @@
     - name: Install wget
       package: name=wget state=present
 
-#    - name: Remove selenium test if exists
-#      file: path=/tmp/selenium_status state=absent
-#      changed_when: False
-#      tags: [post]
-
-    - wait_for: port=4444 delay=2 timeout=30
+    - name: Waiting for selenium server to be available
+      wait_for: port=4444 delay=10 timeout=30
 
     - name: Test selenium server
       shell: wget -qO - http://localhost:4444/wd/hub/status > /dev/null
