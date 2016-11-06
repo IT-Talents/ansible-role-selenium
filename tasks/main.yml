@@ -80,7 +80,7 @@
   when: selenium_system_manager.stdout == 'systemd'
   tags: [configuration, selenium, selenium-install]
 
-- name: Ensure selenium is running
+- name: Ensure selenium service is running
   service: name=selenium state=started
   tags: [configuration, selenium, selenium-run]
 
