@@ -1,6 +1,8 @@
 ---
 # Test file for selenium
 - hosts: all
+  vars:
+    selenium_install_firefox: yes
 
   pre_tasks:
     - name: Update apt cache.

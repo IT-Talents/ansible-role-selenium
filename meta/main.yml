@@ -4,7 +4,7 @@ galaxy_info:
   author: Alex Knoll
   description: Set up selenium and Firefox for running selenium tests.
   license: Apache V2
-  min_ansible_version: 2.0
+  min_ansible_version: 2.1
   platforms:
   - name: EL
     versions:
@@ -12,10 +12,12 @@ galaxy_info:
     - 7
   - name: Ubuntu
     versions:
-    - all
+    - 16.04
+    - 14.04
+    - 12.04
   - name: Debian
     versions:
-    - all
+    - 8
   categories:
   - web
 dependencies: []

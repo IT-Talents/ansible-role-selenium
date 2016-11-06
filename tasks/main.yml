@@ -8,21 +8,37 @@
   tags: [configuration, selenium]
 
 - name: Install dependencies
-  package: name=unzip
+  package: name=unzip state=present
   tags: [configuration, selenium]
 
 - name: Install xvfb
-  package: name={{ selenium_xvfb_package }}
+  package: name={{ selenium_xvfb_package }} state=present
   tags: [configuration, selenium, selenium-xvfb]
 
 ##############################################
 #                 FIREFOX                    #
 ##############################################
 
-#- name: Install FireFox (if configured)
-#  package: name=firefox state=present
-#  when: selenium_install_firefox
-#  tags: [configuration, selenium, selenium-firefox]
+- name: Install key package for firefox (if configured and distro is debian)
+  apt: deb=https://mozilla.debian.net/pkg-mozilla-archive-keyring_1.1_all.deb state=present
+  when:
+    - selenium_install_firefox
+    - ansible_distribution == 'Debian'
+  tags: [configuration, selenium, selenium-firefox]
+
+- name: Add apt repository (if configured and distro is debian)
+  apt_repository: repo='deb http://mozilla.debian.net/ jessie-backports firefox-release' state=present update_cache=yes
+  when:
+    - selenium_install_firefox
+    - ansible_distribution == 'Debian'
+  tags: [configuration, selenium, selenium-firefox]
+
+- name: Install firefox (if configured and distro is debian based)
+  package: name=firefox state=present
+  when:
+    - selenium_install_firefox
+    - ansible_os_family == 'Debian'
+  tags: [configuration, selenium, selenium-firefox]
 
 ##############################################
 #                 CHROME                     #

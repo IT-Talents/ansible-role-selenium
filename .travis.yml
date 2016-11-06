@@ -22,19 +22,23 @@ env:
     run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
 before_install:
-  # Pull container.
   - 'sudo docker pull ${distro}'
 
 script:
   - container_id=$(mktemp)
-  # Run container in detached state.
   - 'sudo docker run --detach --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} ${distro} "${init}" > "${container_id}"'
+
+  # Install deps
+  # - ' sudo docker exec --tty "816ba159f7937f068df3dfaf0a21c07d4457c4e3523a3c04b1c9a8d04c7fc653" env TERM=xterm ansible-galaxy install -r /etc/ansible/roles/role_under_test/tests/requirements.yml'
 
   # Ansible syntax check.
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml --syntax-check'
 
   # Test role.
   - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml'
+
+  # Test firefox
+  - 'sudo docker exec --tty "$(cat ${container_id})" firefox --version'
 
   # Test role idempotence.
   - idempotence=$(mktemp)
@@ -45,7 +49,6 @@ script:
     && (echo 'Idempotence test: pass' && exit 0)
     || (echo 'Idempotence test: fail' && exit 1)
 
-#notifications:
-#  email: false
+notifications:
+  email: false
 #  webhooks: https://galaxy.ansible.com/api/v1/notifications/
-# sudo docker exec --tty "e2e29a1cec113371952d8c4a69f0335d1fdbe2672227f06f9a48dad28abaaf19" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml
