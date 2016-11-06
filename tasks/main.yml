@@ -33,11 +33,10 @@
     - ansible_distribution == 'Debian'
   tags: [configuration, selenium, selenium-firefox]
 
-- name: Install firefox (if configured and distro is debian based)
+- name: Install firefox (if configured)
   package: name=firefox state=present
   when:
     - selenium_install_firefox
-    - ansible_os_family == 'Debian'
   tags: [configuration, selenium, selenium-firefox]
 
 ##############################################

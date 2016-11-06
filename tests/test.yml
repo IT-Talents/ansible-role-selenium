@@ -5,9 +5,13 @@
     selenium_install_firefox: yes
 
   pre_tasks:
-    - name: Update apt cache.
+    - name: Update apt cache (if distro is debian based)
       apt: update_cache=yes
       when: ansible_os_family == 'Debian'
+
+    - name: Install cryptography module (if distro is debian)
+      pip: name=cryptography state=present
+      when: ansible_distribution == 'Debian'
 
   roles:
     - role_under_test
