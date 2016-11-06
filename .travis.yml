@@ -8,9 +8,6 @@ env:
   - distro: geerlingguy/docker-centos7-ansible:latest
     init: /usr/lib/systemd/systemd
     run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - distro: williamyeh/ansible:debian7
-    init: /lib/systemd/systemd
-    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
   - distro: geerlingguy/docker-debian8-ansible:latest
     init: /lib/systemd/systemd
     run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
