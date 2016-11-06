@@ -24,6 +24,8 @@
 #      changed_when: False
 #      tags: [post]
 
+    - wait_for: port=4444 delay=2 timeout=30
+
     - name: Test selenium server
       shell: wget -qO - http://localhost:4444/wd/hub/status > /dev/null
       changed_when: False
