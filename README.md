@@ -15,7 +15,7 @@ Set up selenium and Firefox for running selenium tests.
 
 ## Dependencies
 
-None
+* `geerlingguy.java`
 
 #### Example
 
