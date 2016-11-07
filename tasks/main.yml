@@ -60,7 +60,18 @@
   register: selenium_system_manager
   changed_when: False
 
-- name: Install init script (for systems without systemd)
+# Selenium service via sysv
+- name: Install start script (for systems without systemd)
+  template:
+    src: "selenium-start.j2"
+    dest: "{{ selenium_install_dir }}/selenium/start.sh"
+    owner: root
+    group: root
+    mode: 0755
+  when: selenium_system_manager.stdout == 'sysv'
+  tags: [configuration, selenium, selenium-install]
+
+- name: Install init.d script (for systems without systemd)
   template:
     src: "selenium-init-{{ ansible_os_family }}.j2"
     dest: /etc/init.d/selenium
@@ -70,6 +81,19 @@
   when: selenium_system_manager.stdout == 'sysv'
   tags: [configuration, selenium, selenium-install]
 
+- name: Start selenium service if running via sysv
+  shell: /etc/init.d/selenium restart
+  when: selenium_system_manager.stdout == 'sysv'
+  changed_when: False
+  tags: [configuration, selenium, selenium-run]
+
+- name: Ensure selenium service is running via ps
+  shell: ps -ef |  grep "/bin/sh /usr/bin/xvfb-run /usr/bin/java -client -jar" | grep -v grep
+  when: selenium_system_manager.stdout == 'sysv'
+  changed_when: False
+  tags: [configuration, selenium, selenium-run]
+
+# Selenium service via systemd
 - name: Install systemd unit file (for systems supporting systemd)
   template:
     src: selenium-unit.j2
@@ -80,10 +104,14 @@
   when: selenium_system_manager.stdout == 'systemd'
   tags: [configuration, selenium, selenium-install]
 
-- name: Ensure selenium service is running
-  service: name=selenium state=started
+- name: Ensure selenium service is running via systemd
+  service: name=selenium state=started enabled=yes
+  when: selenium_system_manager.stdout == 'systemd'
   tags: [configuration, selenium, selenium-run]
 
+- name: Waiting for selenium server to be available
+  wait_for: port=4444 delay=2 timeout=60
+  tags: [configuration, selenium, selenium-run]
 
 ##############################################
 #                 CHROME                     #

@@ -50,7 +50,7 @@ case "$1" in
             # Stop daemon itself.
             start-stop-daemon --stop --pidfile $DAEMON_PID_FILE
             # Stop all child processes.
-            sudo kill $DAEMON_CHILDREN
+            kill $DAEMON_CHILDREN
         else
             log_progress_msg "Service not running"
         fi

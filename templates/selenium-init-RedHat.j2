@@ -9,20 +9,14 @@
 . /etc/init.d/functions
 
 java_bin=/usr/bin/java
-
 xvfb_bin=/usr/bin/xvfb-run
 
 selenium_dir={{ selenium_install_dir }}/selenium
 selenium_jar_file="$selenium_dir/selenium-server-standalone-{{ selenium_version }}.jar"
-user=root
-exec="$xvfb_bin $java_bin"
-args=" -client -jar $selenium_jar_file"
 lockfile="/var/lock/subsys/selenium"
 pidfile="$selenium_dir/selenium.pid"
 logfile="$selenium_dir/selenium.log"
-prog="selenium"
-display=":1"
-port="4444"
+prog="start.sh"
 
 RETVAL=0
 
@@ -30,28 +24,33 @@ start() {
   echo -n $"Starting $prog: "
 
   touch $pidfile
-  chown $user $pidfile
-
   touch $logfile
-  chown $user $logfile
 
-  /bin/su - $user -c "DISPLAY=\"$display\" $exec $args >> $logfile 2>&1 & echo \$! > $pidfile"
-
+  nohup $selenium_dir/start.sh 2>> $logfile 1>> $logfile &
   sleep 2
 
-  pgrep -fl $prog
+  pgrep -f $prog | sed -n 1p > $pidfile
+
   RETVAL=$?
   [ $RETVAL -eq 0 ] && echo_success || echo_failure
+  echo
+  [ $RETVAL -eq 0 ] && touch $lockfile
 
   return $RETVAL
 }
 
 stop() {
   echo -n $"Stopping $prog: "
-  killproc -p $pidfile $prog
+
+  DAEMON_PID=$(cat $pidfile)
+  DAEMON_CHILDREN=$(pstree -l -p $DAEMON_PID |grep "([[:digit:]]*)" -o |tr -d '()')
+  killproc -p $DAEMON_PID $prog && kill $DAEMON_CHILDREN
+
   RETVAL=$?
+  [ $RETVAL -eq 0 ] && echo_success || echo_failure
   echo
   [ $RETVAL -eq 0 ] && rm -f $lockfile $pidfile
+
   return $RETVAL
 }
 
