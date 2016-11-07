@@ -2,9 +2,9 @@
 
 set -e
 
-distro="geerlingguy/docker-ubuntu1604-ansible:latest"
-init="/lib/systemd/systemd"
-run_opts="--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+distro="geerlingguy/docker-ubuntu1404-ansible:latest"
+init="/sbin/init"
+run_opts="--privileged"
 container_id=$(mktemp)
 idempotence=$(mktemp)
 
