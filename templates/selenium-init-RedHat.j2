@@ -27,7 +27,7 @@ start() {
   touch $logfile
 
   nohup $selenium_dir/start.sh 2>> $logfile 1>> $logfile &
-  sleep 2
+  sleep 5
 
   pgrep -f $prog | sed -n 1p > $pidfile
 
@@ -56,7 +56,7 @@ stop() {
 
 restart() {
   stop
-  sleep 2
+  sleep 5
   start
 }
 
