@@ -25,7 +25,7 @@
 
     # Check response
     - name: Test selenium server response
-      shell: wget -qO - http://localhost:4444/wd/hub/status
+      shell: wget -qO - http://127.0.0.1:4444/wd/hub/status
       changed_when: False
       ignore_errors: yes
       register: result
@@ -89,7 +89,7 @@
 
     # Check response again
     - name: Test selenium server response
-      shell: wget -qO - http://localhost:4444/wd/hub/status
+      shell: wget -qO - http://127.0.0.1:4444/wd/hub/status
       changed_when: False
       ignore_errors: yes
       register: result
