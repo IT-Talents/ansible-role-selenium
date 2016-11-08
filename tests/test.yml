@@ -46,6 +46,7 @@
     - name: Debug output for ps result if wget failed
       debug: var=result_ps.stdout_lines verbosity=0
       when: result.rc > 0
+      changed_when: False
       tags: [post]
 
     - name: Get log file for sysv if wget failed
@@ -58,6 +59,7 @@
     - name: Debug output for log result for sysv if wget failed
       debug: var=result_log.stdout_lines verbosity=0
       when: result.rc > 0 and selenium_system_manager.stdout == 'sysv'
+      changed_when: False
       tags: [post]
 
     - name: Get service status via systemd if wget failed
@@ -70,10 +72,12 @@
     - name: Debug output for systemd service status result if wget failed
       debug: var=result_service.stdout_lines verbosity=0
       when: result.rc > 0 and selenium_system_manager.stdout == 'systemd'
+      changed_when: False
       tags: [post]
 
     - fail: msg="Selenium server isn't reachable, see above output for debugging."
       when: result.rc > 0
+      changed_when: False
       tags: [post]
 
     # Check selenium server restart
@@ -106,6 +110,7 @@
     - name: Debug output for ps result if wget failed
       debug: var=result_ps.stdout_lines verbosity=0
       when: result.rc > 0
+      changed_when: False
       tags: [post]
 
     - name: Get log file for sysv if wget failed
@@ -118,6 +123,7 @@
     - name: Debug output for log result for sysv if wget failed
       debug: var=result_log.stdout_lines verbosity=0
       when: result.rc > 0 and selenium_system_manager.stdout == 'sysv'
+      changed_when: False
       tags: [post]
 
     - name: Get service status via systemd if wget failed
@@ -130,10 +136,12 @@
     - name: Debug output for systemd service status result if wget failed
       debug: var=result_service.stdout_lines verbosity=0
       when: result.rc > 0 and selenium_system_manager.stdout == 'systemd'
+      changed_when: False
       tags: [post]
 
     - fail: msg="Selenium server isn't reachable, see above output for debugging."
       when: result.rc > 0
+      changed_when: False
       tags: [post]
 
   roles:
