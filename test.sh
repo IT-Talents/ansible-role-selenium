@@ -2,9 +2,9 @@
 
 set -e
 
-distro="geerlingguy/docker-ubuntu1404-ansible:latest"
-init="/sbin/init"
-run_opts="--privileged"
+distro="geerlingguy/docker-centos7-ansible:latest"
+init="/usr/lib/systemd/systemd"
+run_opts="--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 container_id=$(mktemp)
 idempotence=$(mktemp)
 
@@ -28,7 +28,7 @@ docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/
 echo "first test run..."
 docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml
 
-echo "second test run for idempotency..."
-docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml
+#echo "second test run for idempotency..."
+#docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml
 
 echo "used container id: $(cat ${container_id})"

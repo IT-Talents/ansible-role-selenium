@@ -12,18 +12,18 @@
       tags: [pre]
 
   post_tasks:
-    - name: Install wget
-      package: name=wget state=present
-      changed_when: False
-      tags: [post]
-
     # Check browser installs
     - name: Check firefox install
       shell: firefox --version
       changed_when: False
       tags: [post]
 
-    # Check selenium response
+    - name: Install wget
+      package: name=wget state=present
+      changed_when: False
+      tags: [post]
+
+    # Check response again
     - name: Test selenium server response
       shell: wget -qO - http://localhost:4444/wd/hub/status > /dev/null
       changed_when: False
@@ -35,6 +35,11 @@
       when: selenium_system_manager.stdout == 'sysv'
       changed_when: False
       tags: [post]
+
+    - name: Waiting for selenium server to be available
+      wait_for: port=4444 delay=2 timeout=60
+      changed_when: False
+      tags: [configuration, selenium, selenium-run]
 
     # Check response again
     - name: Test selenium server response
