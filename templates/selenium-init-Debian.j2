@@ -38,6 +38,10 @@ case "$1" in
             log_daemon_msg "Starting Selenium server"
             log_progress_msg "selenium"
             start-stop-daemon -c $RUN_AS --start --quiet --background --pidfile $DAEMON_PID_FILE --make-pidfile --exec $XVFB_BIN $JAVA_BIN -- $SELENIUM_DAEMON_OPTS
+
+             while ! tail -n1 $logfile | grep "Selenium Server is up and running" > /dev/null; do
+               sleep 1
+             done
         fi
         ;;
 

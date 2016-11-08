@@ -17,6 +17,7 @@ lockfile="/var/lock/subsys/selenium"
 pidfile="$selenium_dir/selenium.pid"
 logfile="$selenium_dir/selenium.log"
 prog="start.sh"
+max=10
 
 RETVAL=0
 
@@ -27,7 +28,13 @@ start() {
   touch $logfile
 
   nohup $selenium_dir/start.sh 2>> $logfile 1>> $logfile &
-  sleep 5
+
+  COUNTER = 0;
+  while ! tail -n1 $logfile | grep "Selenium Server is up and running" > /dev/null; do
+    COUNTER=$[COUNTER + 1]
+    sleep 3
+    [ $COUNTER -eq $max ] && echo_failure && exit 1;
+  done
 
   pgrep -f $prog | sed -n 1p > $pidfile
 

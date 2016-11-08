@@ -109,10 +109,6 @@
   when: selenium_system_manager.stdout == 'systemd'
   tags: [configuration, selenium, selenium-run]
 
-- name: Waiting for selenium server port to be open
-  wait_for: port=4444 delay=2 timeout=60
-  tags: [configuration, selenium, selenium-run]
-
 ##############################################
 #                 CHROME                     #
 ##############################################

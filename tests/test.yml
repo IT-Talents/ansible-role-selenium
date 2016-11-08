@@ -23,11 +23,57 @@
       changed_when: False
       tags: [post]
 
-    # Check response again
+    # Check response
     - name: Test selenium server response
-      shell: wget -qO - http://localhost:4444/wd/hub/status > /dev/null
+      shell: wget -qO - http://localhost:4444/wd/hub/status
+      changed_when: False
+      ignore_errors: yes
+      register: result
+      tags: [post]
+
+    - name: Debug output for wget result if wget failed
+      debug: var=result verbosity=2
+      when: result.rc > 0
+      tags: [post]
+
+    - name: Get ps output if wget failed
+      shell: ps -x
+      when: result.rc > 0
+      register: result_ps
       changed_when: False
       tags: [post]
+
+    - name: Debug output for ps result if wget failed
+      debug: var=result_ps.stdout_lines verbosity=0
+      when: result.rc > 0
+      tags: [post]
+
+    - name: Get log file for sysv if wget failed
+      shell: cat {{ selenium_install_dir }}/selenium/selenium.log
+      when: result.rc > 0 and selenium_system_manager.stdout == 'sysv'
+      register: result_log
+      changed_when: False
+      tags: [post]
+
+    - name: Debug output for log result for sysv if wget failed
+      debug: var=result_log.stdout_lines verbosity=0
+      when: result.rc > 0 and selenium_system_manager.stdout == 'sysv'
+      tags: [post]
+
+    - name: Get service status via systemd if wget failed
+      shell: service selenium status
+      when: result.rc > 0 and selenium_system_manager.stdout == 'systemd'
+      register: result_service
+      changed_when: False
+      tags: [post]
+
+    - name: Debug output for systemd service status result if wget failed
+      debug: var=result_service.stdout_lines verbosity=0
+      when: result.rc > 0 and selenium_system_manager.stdout == 'systemd'
+      tags: [post]
+
+    - name: Force failure if wget failed
+      fail_when: result.rc > 0
 
     # Check selenium server restart
     - name: Test restart selenium server for sysv
@@ -36,16 +82,57 @@
       changed_when: False
       tags: [post]
 
-    - name: Waiting for selenium server to be available
-      wait_for: port=4444 delay=2 timeout=60
-      changed_when: False
-      tags: [configuration, selenium, selenium-run]
-
     # Check response again
     - name: Test selenium server response
-      shell: wget -qO - http://localhost:4444/wd/hub/status > /dev/null
+      shell: wget -qO - http://localhost:4444/wd/hub/status
+      changed_when: False
+      ignore_errors: yes
+      register: result
+      tags: [post]
+
+    - name: Debug output for wget result if wget failed
+      debug: var=result verbosity=2
+      when: result.rc > 0
+      tags: [post]
+
+    - name: Get ps output if wget failed
+      shell: ps -x
+      when: result.rc > 0
+      register: result_ps
       changed_when: False
       tags: [post]
+
+    - name: Debug output for ps result if wget failed
+      debug: var=result_ps.stdout_lines verbosity=0
+      when: result.rc > 0
+      tags: [post]
+
+    - name: Get log file for sysv if wget failed
+      shell: cat {{ selenium_install_dir }}/selenium/selenium.log
+      when: result.rc > 0 and selenium_system_manager.stdout == 'sysv'
+      register: result_log
+      changed_when: False
+      tags: [post]
+
+    - name: Debug output for log result for sysv if wget failed
+      debug: var=result_log.stdout_lines verbosity=0
+      when: result.rc > 0 and selenium_system_manager.stdout == 'sysv'
+      tags: [post]
+
+    - name: Get service status via systemd if wget failed
+      shell: service selenium status
+      when: result.rc > 0 and selenium_system_manager.stdout == 'systemd'
+      register: result_service
+      changed_when: False
+      tags: [post]
+
+    - name: Debug output for systemd service status result if wget failed
+      debug: var=result_service.stdout_lines verbosity=0
+      when: result.rc > 0 and selenium_system_manager.stdout == 'systemd'
+      tags: [post]
+
+    - name: Force failure if wget failed
+      fail_when: result.rc > 0
 
   roles:
     - role_under_test

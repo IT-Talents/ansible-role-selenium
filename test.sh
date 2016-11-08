@@ -2,9 +2,9 @@
 
 set -e
 
-distro="geerlingguy/docker-centos7-ansible:latest"
-init="/usr/lib/systemd/systemd"
-run_opts="--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+distro="geerlingguy/docker-centos6-ansible:latest"
+init="/sbin/init"
+run_opts="--privileged"
 container_id=$(mktemp)
 idempotence=$(mktemp)
 
