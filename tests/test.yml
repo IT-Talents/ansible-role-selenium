@@ -72,8 +72,9 @@
       when: result.rc > 0 and selenium_system_manager.stdout == 'systemd'
       tags: [post]
 
-    - name: Force failure if wget failed
-      fail_when: result.rc > 0
+    - fail: msg="Selenium server isn't reachable, see above output for debugging."
+      when: result.rc > 0
+      tags: [post]
 
     # Check selenium server restart
     - name: Test restart selenium server for sysv
@@ -131,8 +132,9 @@
       when: result.rc > 0 and selenium_system_manager.stdout == 'systemd'
       tags: [post]
 
-    - name: Force failure if wget failed
-      fail_when: result.rc > 0
+    - fail: msg="Selenium server isn't reachable, see above output for debugging."
+      when: result.rc > 0
+      tags: [post]
 
   roles:
     - role_under_test
