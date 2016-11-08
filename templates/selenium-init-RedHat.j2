@@ -32,7 +32,7 @@ start() {
   COUNTER = 0;
   while ! tail -n1 $logfile | grep "Selenium Server is up and running" > /dev/null; do
     COUNTER=$[COUNTER + 1]
-    sleep 3
+    sleep 5
     [ $COUNTER -eq $max ] && echo_failure && exit 1;
   done
 
