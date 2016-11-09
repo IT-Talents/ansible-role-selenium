@@ -14,6 +14,9 @@ set -e
 echo "pulling distro..."
 docker pull ${distro}
 
+echo "switching to urandom"
+docker run -v /dev/urandom:/dev/random
+
 echo "creating docker image..."
 docker run --detach --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} ${distro} "${init}" > "${container_id}"
 

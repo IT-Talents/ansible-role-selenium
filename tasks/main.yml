@@ -15,10 +15,6 @@
   package: name={{ selenium_xvfb_package }} state=present
   tags: [configuration, selenium, selenium-xvfb]
 
-- name: Install haveged to prevent entropy problems
-  package: name=haveged state=present
-  tags: [configuration, selenium]
-
 ##############################################
 #                 FIREFOX                    #
 ##############################################
