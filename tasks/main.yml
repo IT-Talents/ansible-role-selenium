@@ -87,6 +87,24 @@
   changed_when: False
   tags: [configuration, selenium, selenium-run]
 
+- name: Get ps output
+  shell: ps -x
+  register: result_ps
+  changed_when: False
+
+- debug: var=result_ps.stdout_lines verbosity=0
+  changed_when: False
+
+- name: Get log file for sysv
+  shell: cat {{ selenium_install_dir }}/selenium/selenium.log
+  when: selenium_system_manager.stdout == 'sysv'
+  register: result_log
+  changed_when: False
+
+- debug: var=result_log.stdout_lines verbosity=0
+  when: selenium_system_manager.stdout == 'sysv'
+  changed_when: False
+
 - name: Ensure selenium service is running via ps
   shell: ps -ef |  grep "/bin/sh /usr/bin/xvfb-run /usr/bin/java -client -jar" | grep -v grep
   when: selenium_system_manager.stdout == 'sysv'
