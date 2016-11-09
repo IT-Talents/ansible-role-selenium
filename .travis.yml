@@ -2,45 +2,15 @@
 services: docker
 
 env:
-  - distro: geerlingguy/docker-centos6-ansible:latest
-    init: /sbin/init
-    run_opts: "--privileged"
-  - distro: geerlingguy/docker-centos7-ansible:latest
-    init: /usr/lib/systemd/systemd
-    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - distro: geerlingguy/docker-debian8-ansible:latest
-    init: /lib/systemd/systemd
-    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
-  - distro: geerlingguy/docker-ubuntu1204-ansible:latest
-    init: /sbin/init
-    run_opts: "--privileged"
-  - distro: geerlingguy/docker-ubuntu1404-ansible:latest
-    init: /sbin/init
-    run_opts: "--privileged"
-  - distro: geerlingguy/docker-ubuntu1604-ansible:latest
-    init: /lib/systemd/systemd
-    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
-
-before_install:
-  - 'sudo docker pull ${distro}'
+  - distro: centos6
+#  - distro: centos7
+  - distro: debian8
+#  - distro: ubuntu1204
+#  - distro: ubuntu1404
+  - distro: ubuntu1604
 
 script:
-  - container_id=$(mktemp)
-  - 'sudo docker run --detach -v /dev/urandom:/dev/random --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${run_opts} ${distro} "${init}" > "${container_id}"'
-  # Install deps
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-galaxy install -r /etc/ansible/roles/role_under_test/tests/requirements.yml'
-  # Ansible syntax check.
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml --syntax-check'
-  # Test role.
-  - 'sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml'
-  # Test role idempotence.
-  - idempotence=$(mktemp)
-  - sudo docker exec "$(cat ${container_id})" ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml | tee -a ${idempotence}
-  - >
-    tail ${idempotence}
-    | grep -q 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
+  - './test.sh -p -r -i -s -d ${distro}'
 
 notifications:
   email: false
