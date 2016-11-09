@@ -17,7 +17,7 @@ lockfile="/var/lock/subsys/selenium"
 pidfile="$selenium_dir/selenium.pid"
 logfile="$selenium_dir/selenium.log"
 prog="start.sh"
-max=30
+max=10
 
 RETVAL=0
 
@@ -36,7 +36,7 @@ start() {
         echo_failure
         return 1
     fi
-    sleep 10
+    sleep 5
   done
 
   pgrep -f $prog | sed -n 1p > $pidfile
