@@ -42,6 +42,7 @@
         register: result
         changed_when: False
 
+      # if any errors are encountered, print a lot of debug info and then fail
       rescue:
       - debug: var=result verbosity=2
         changed_when: False

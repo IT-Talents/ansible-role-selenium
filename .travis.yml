@@ -5,21 +5,21 @@ env:
   - distro: geerlingguy/docker-centos6-ansible:latest
     init: /sbin/init
     run_opts: "--privileged"
-#  - distro: geerlingguy/docker-centos7-ansible:latest
-#    init: /usr/lib/systemd/systemd
-#    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
-#  - distro: geerlingguy/docker-debian8-ansible:latest
-#    init: /lib/systemd/systemd
-#    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
-#  - distro: geerlingguy/docker-ubuntu1204-ansible:latest
-#    init: /sbin/init
-#    run_opts: "--privileged"
-#  - distro: geerlingguy/docker-ubuntu1404-ansible:latest
-#    init: /sbin/init
-#    run_opts: "--privileged"
-#  - distro: geerlingguy/docker-ubuntu1604-ansible:latest
-#    init: /lib/systemd/systemd
-#    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - distro: geerlingguy/docker-centos7-ansible:latest
+    init: /usr/lib/systemd/systemd
+    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - distro: geerlingguy/docker-debian8-ansible:latest
+    init: /lib/systemd/systemd
+    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  - distro: geerlingguy/docker-ubuntu1204-ansible:latest
+    init: /sbin/init
+    run_opts: "--privileged"
+  - distro: geerlingguy/docker-ubuntu1404-ansible:latest
+    init: /sbin/init
+    run_opts: "--privileged"
+  - distro: geerlingguy/docker-ubuntu1604-ansible:latest
+    init: /lib/systemd/systemd
+    run_opts: "--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
 before_install:
   - 'sudo docker pull ${distro}'
