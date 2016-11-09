@@ -85,6 +85,8 @@
   shell: /etc/init.d/selenium restart
   when: selenium_system_manager.stdout == 'sysv'
   changed_when: False
+  ignore_errors: yes
+  register: selenium_init_start
   tags: [configuration, selenium, selenium-run]
 
 - name: Get ps output
@@ -102,6 +104,10 @@
   changed_when: False
 
 - debug: var=result_log.stdout_lines verbosity=0
+  when: selenium_system_manager.stdout == 'sysv' and selenium_init_start.rc > 0
+  changed_when: False
+
+- fail: msg="Selenium server isn't reachable, see above output for debugging."
   when: selenium_system_manager.stdout == 'sysv'
   changed_when: False
 
