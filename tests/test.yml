@@ -74,12 +74,6 @@
         when: selenium_system_manager.stdout == 'systemd'
         changed_when: False
 
-
-
-
-
-      - pause: minutes=1
-
       - name: Get ps output
         shell: ps -x
         register: result_ps
@@ -97,10 +91,6 @@
       - debug: var=result_log.stdout_lines verbosity=0
         when: selenium_system_manager.stdout == 'sysv'
         changed_when: False
-
-
-
-
 
       - fail: msg="Selenium server isn't reachable, see above output for debugging."
         changed_when: False
