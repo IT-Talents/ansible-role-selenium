@@ -48,6 +48,7 @@ start() {
 
 stop() {
   echo -n $"Stopping $prog: "
+  echo "Stopping selenium server" >> $logfile
 
   DAEMON_PID=$(cat $pidfile)
   DAEMON_CHILDREN=$(pstree -l -p $DAEMON_PID |grep "([[:digit:]]*)" -o |tr -d '()')
