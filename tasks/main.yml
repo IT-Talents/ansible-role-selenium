@@ -59,18 +59,18 @@
   shell: pidof systemd > /dev/null && printf "systemd" || printf "sysv"
   register: selenium_system_manager
   changed_when: False
+  tags: [configuration, selenium, selenium-install]
 
-# Selenium service via sysv
-- name: Install start script (for systems without systemd)
+- name: Install start script
   template:
     src: "selenium-start.j2"
     dest: "{{ selenium_install_dir }}/selenium/start.sh"
     owner: root
     group: root
     mode: 0755
-  when: selenium_system_manager.stdout == 'sysv'
   tags: [configuration, selenium, selenium-install]
 
+# Selenium service via sysv
 - name: Install init.d script (for systems without systemd)
   template:
     src: "selenium-init-{{ ansible_os_family }}.j2"
