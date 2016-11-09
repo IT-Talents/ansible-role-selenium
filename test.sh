@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 distro="geerlingguy/docker-centos6-ansible:latest"
 init="/sbin/init"
 run_opts="--privileged"
@@ -10,6 +8,8 @@ idempotence=$(mktemp)
 
 echo "removing all docker containers..."
 docker rm -f $(sudo docker ps -a -q)
+
+set -e
 
 echo "pulling distro..."
 docker pull ${distro}
