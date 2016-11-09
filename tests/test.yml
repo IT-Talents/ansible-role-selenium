@@ -24,6 +24,9 @@
       tags: [post]
 
     - block:
+      - pause: seconds=10
+        when: selenium_system_manager.stdout == 'systemd'
+
       # Check response
       - name: Test selenium server response
         shell: wget -qO - http://127.0.0.1:4444/wd/hub/status
@@ -85,12 +88,10 @@
 
       - name: Get log file for sysv
         shell: cat {{ selenium_install_dir }}/selenium/selenium.log
-        when: selenium_system_manager.stdout == 'sysv'
         register: result_log
         changed_when: False
 
       - debug: var=result_log.stdout_lines verbosity=0
-        when: selenium_system_manager.stdout == 'sysv'
         changed_when: False
 
       - fail: msg="Selenium server isn't reachable, see above output for debugging."

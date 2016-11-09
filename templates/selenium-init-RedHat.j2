@@ -27,7 +27,7 @@ start() {
   touch $logfile
 
   echo "Starting selenium server" >> $logfile
-  nohup $selenium_dir/start.sh 2>> $logfile 1>> $logfile &
+  nohup $selenium_dir/$prog &
 
   COUNTER=0;
   while ! tail -n1 $logfile | grep "Selenium Server is up and running" > /dev/null; do
