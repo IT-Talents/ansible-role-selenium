@@ -27,6 +27,8 @@ start() {
   touch $pidfile
   touch $logfile
 
+  echo "Starting selenium server" >> $logfile
+
   nohup $selenium_dir/start.sh 2>> $logfile 1>> $logfile &
 
   COUNTER = 0;
