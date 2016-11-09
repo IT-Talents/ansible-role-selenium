@@ -46,7 +46,7 @@
       - debug: var=result verbosity=2
         changed_when: False
 
-      - name: Get ps output if wget failed
+      - name: Get ps output
         shell: ps -x
         register: result_ps
         changed_when: False

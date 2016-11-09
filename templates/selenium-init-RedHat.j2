@@ -36,7 +36,7 @@ start() {
         echo_failure
         return 1
     fi
-    sleep 5
+    sleep 10
   done
 
   pgrep -f $prog | sed -n 1p > $pidfile
