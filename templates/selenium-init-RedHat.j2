@@ -30,14 +30,12 @@ start() {
   nohup $selenium_dir/start.sh 2>> $logfile 1>> $logfile &
 
   COUNTER=0;
-  while ! tail -n1 $logfile | grep "Selenium Server is ups and running" > /dev/null; do
+  while ! tail -n1 $logfile | grep "Selenium Server is up and running" > /dev/null; do
     COUNTER=$((COUNTER+1))
     if [ "$COUNTER" -gt "$max" ] ; then
         echo_failure
         return 1
     fi
-
-    echo "waiting for selenium server ($COUNTER / $max)..."
     sleep 5
   done
 
