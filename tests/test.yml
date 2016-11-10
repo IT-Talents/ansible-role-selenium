@@ -50,16 +50,8 @@
       - debug: var=result verbosity=2
         changed_when: False
 
-      - name: Get ps output
-        shell: ps -x
-        register: result_ps
-        changed_when: False
-
-      - debug: var=result_ps.stdout_lines verbosity=0
-        changed_when: False
-
-      - name: Get log file for sysv
-        shell: cat {{ selenium_install_dir }}/selenium/selenium.log
+      - name: Get log file
+        shell: cat {{ selenium_install_dir }}/selenium.log
         when: selenium_system_manager.stdout == 'sysv'
         register: result_log
         changed_when: False
@@ -84,14 +76,6 @@
         changed_when: False
 
       - debug: var=result_ps.stdout_lines verbosity=0
-        changed_when: False
-
-      - name: Get log file for sysv
-        shell: cat {{ selenium_install_dir }}/selenium/selenium.log
-        register: result_log
-        changed_when: False
-
-      - debug: var=result_log.stdout_lines verbosity=0
         changed_when: False
 
       - fail: msg="Selenium server isn't reachable, see above output for debugging."

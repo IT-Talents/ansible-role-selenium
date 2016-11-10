@@ -8,23 +8,20 @@
 # Source function library.
 . /etc/init.d/functions
 
-selenium_dir={{ selenium_install_dir }}/selenium
-selenium_jar_file="$selenium_dir/selenium-server-standalone-{{ selenium_version }}.jar"
 lockfile="/var/lock/subsys/selenium"
-pidfile="$selenium_dir/selenium.pid"
-logfile="$selenium_dir/selenium.log"
-prog="start.sh"
+pidfile="{{ selenium_install_dir }}/selenium.pid"
+logfile="{{ selenium_install_dir }}/selenium.log"
 max=10
 
 RETVAL=0
 
 start() {
-  echo -n $"Starting $prog: "
+  echo -n $"Starting selenium: "
   touch $pidfile
   touch $logfile
 
   echo "Starting selenium server" >> $logfile
-  nohup $selenium_dir/$prog &
+  nohup {{ selenium_install_dir }}/start.sh &
 
   COUNTER=0;
   while ! tail -n1 $logfile | grep "Selenium Server is up and running" > /dev/null; do
@@ -36,7 +33,7 @@ start() {
     sleep 5
   done
 
-  pgrep -f $prog | sed -n 1p > $pidfile
+  pgrep -f start.sh | sed -n 1p > $pidfile
 
   RETVAL=$?
   [ $RETVAL -eq 0 ] && echo_success || echo_failure
@@ -47,12 +44,12 @@ start() {
 }
 
 stop() {
-  echo -n $"Stopping $prog: "
+  echo -n $"Stopping selenium: "
   echo "Stopping selenium server" >> $logfile
 
   DAEMON_PID=$(cat $pidfile)
   DAEMON_CHILDREN=$(pstree -l -p $DAEMON_PID |grep "([[:digit:]]*)" -o |tr -d '()')
-  killproc -p $DAEMON_PID $prog && kill $DAEMON_CHILDREN
+  killproc -p $DAEMON_PID start.sh && kill $DAEMON_CHILDREN
 
   RETVAL=$?
   [ $RETVAL -eq 0 ] && echo_success || echo_failure

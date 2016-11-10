@@ -46,13 +46,13 @@
 ##############################################
 
 - name: Create selenium directory
-  file: "path={{ selenium_install_dir }}/selenium state=directory recurse=yes"
+  file: "path={{ selenium_install_dir }} state=directory recurse=yes"
   tags: [configuration, selenium, selenium-create-directory]
 
 - name: Download Selenium
   get_url:
     url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
-    dest: "{{ selenium_install_dir }}/selenium/selenium-server-standalone-{{ selenium_version }}.jar"
+    dest: "{{ selenium_install_dir }}/selenium-server-standalone-{{ selenium_version }}.jar"
   tags: [configuration, selenium, selenium-download]
 
 - name: Check system manager
@@ -64,7 +64,7 @@
 - name: Install start script
   template:
     src: "selenium-start.j2"
-    dest: "{{ selenium_install_dir }}/selenium/start.sh"
+    dest: "{{ selenium_install_dir }}/start.sh"
     owner: root
     group: root
     mode: 0755
