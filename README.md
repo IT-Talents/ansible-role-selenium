@@ -77,3 +77,9 @@ We welcome contributed improvements and bug fixes via the usual workflow:
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new pull request
+
+Additionally there is a test script located in the root of this directory with which you can test individual distros like so (docker must be installed)
+
+    ~# sudo ./test.sh -p -r -d ubuntu1604
+    
+See "./test.sh" for more information.
