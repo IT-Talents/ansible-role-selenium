@@ -5,8 +5,8 @@ env:
   - distro: centos6
   - distro: centos7
   - distro: debian8
-#  - distro: ubuntu1204
-#  - distro: ubuntu1404
+  - distro: ubuntu1204
+  - distro: ubuntu1404
   - distro: ubuntu1604
 
 script:

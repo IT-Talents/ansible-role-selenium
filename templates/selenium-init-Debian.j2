@@ -14,15 +14,11 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DISPLAY_ID=":1"
 RUN_AS=root
 
-JAVA_BIN=/usr/bin/java
-
-XVFB_BIN=/usr/bin/xvfb-run
-
 SELENIUM_DIR={{ selenium_install_dir }}/selenium
 SELENIUM_JAR_FILE="$SELENIUM_DIR/selenium-server-standalone-{{ selenium_version }}.jar"
 DAEMON_PID_FILE="$SELENIUM_DIR/selenium.pid"
 SELENIUM_LOG_FILE="$SELENIUM_DIR/selenium.log"
-SELENIUM_DAEMON_OPTS=" -client -jar $SELENIUM_JAR_FILE -log $SELENIUM_LOG_FILE"
+MAX=10
 
 export DISPLAY="$DISPLAY_ID"
 
@@ -32,16 +28,21 @@ set -e
 
 case "$1" in
     start)
-        if status_of_proc -p $DAEMON_PID_FILE "$SELENIUM_JAR_FILE" $SELENIUM_JAR_FILE > /dev/null; then
+        if status_of_proc -p $DAEMON_PID_FILE "$SELENIUM_DIR/start.sh" $SELENIUM_DIR/start.sh > /dev/null; then
             log_progress_msg "Service already running"
         else
             log_daemon_msg "Starting Selenium server"
             log_progress_msg "selenium"
-            start-stop-daemon -c $RUN_AS --start --quiet --background --pidfile $DAEMON_PID_FILE --make-pidfile --exec $XVFB_BIN $JAVA_BIN -- $SELENIUM_DAEMON_OPTS
+            start-stop-daemon -c $RUN_AS --start --quiet --background --pidfile $DAEMON_PID_FILE --make-pidfile --exec $SELENIUM_DIR/start.sh
 
-             while ! tail -n1 $logfile | grep "Selenium Server is up and running" > /dev/null; do
-               sleep 1
-             done
+            COUNTER=0;
+            while ! tail -n1 $SELENIUM_LOG_FILE | grep "Selenium Server is up and running" > /dev/null; do
+              COUNTER=$((COUNTER+1))
+              if [ "$COUNTER" -gt "$MAX" ] ; then
+                  exit 1
+              fi
+              sleep 5
+            done
         fi
         ;;
 
@@ -62,7 +63,7 @@ case "$1" in
 
     restart|force-reload)
         $0 stop
-        sleep 5
+        sleep 1
         $0 start
 	;;
 
