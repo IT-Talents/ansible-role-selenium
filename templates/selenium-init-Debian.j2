@@ -29,6 +29,7 @@ case "$1" in
         if status_of_proc -p $DAEMON_PID_FILE "{{ selenium_install_dir }}/start.sh" {{ selenium_install_dir }}/start.sh > /dev/null; then
             log_progress_msg "Service already running"
         else
+            echo "Starting selenium server" >> $SELENIUM_LOG_FILE
             log_daemon_msg "Starting Selenium server"
             log_progress_msg "selenium"
             start-stop-daemon -c $RUN_AS --start --quiet --background --pidfile $DAEMON_PID_FILE --make-pidfile --exec {{ selenium_install_dir }}/start.sh
