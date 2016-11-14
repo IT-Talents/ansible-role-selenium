@@ -4,3 +4,9 @@ selenium_install_dir: /opt/selenium
 selenium_version: "2.53.0"
 selenium_install_firefox: no
 selenium_install_chrome: yes
+
+selenium:
+  log: /opt/selenium/selenium.log
+#  version: "2.53.0"
+#  firefox: install=no
+#  chrome: install=yes

@@ -49,6 +49,10 @@
   file: "path={{ selenium_install_dir }} state=directory recurse=yes"
   tags: [configuration, selenium, selenium-create-directory]
 
+- name: Create selenium log file
+  file: "path={{ selenium.log }}"
+  tags: [configuration, selenium, selenium-create-directory]
+
 - name: Download Selenium
   get_url:
     url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
