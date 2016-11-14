@@ -2,7 +2,9 @@
 # Test file for selenium
 - hosts: all
   vars:
-    selenium_install_firefox: yes
+    selenium:
+      firefox:
+        install: yes
 
   pre_tasks:
     - name: Update apt cache (if distro is debian based)

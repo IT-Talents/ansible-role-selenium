@@ -9,7 +9,7 @@
 . /etc/init.d/functions
 
 lockfile="/var/lock/subsys/selenium"
-pidfile="{{ selenium_install_dir }}/selenium.pid"
+pidfile="{{ selenium.dir }}/selenium.pid"
 logfile="{{ selenium.log }}"
 max=10
 
@@ -21,7 +21,7 @@ start() {
   touch $logfile
 
   echo "Starting selenium server" >> $logfile
-  nohup {{ selenium_install_dir }}/start.sh &
+  nohup {{ selenium.dir }}/start.sh &
 
   COUNTER=0;
   while ! tail -n1 $logfile | grep "Selenium Server is up and running" > /dev/null; do

@@ -23,14 +23,14 @@
 - name: Install key package for firefox (if configured and distro is debian)
   apt: deb=https://mozilla.debian.net/pkg-mozilla-archive-keyring_1.1_all.deb state=present
   when:
-    - selenium_install_firefox
+    - selenium.firefox.install
     - ansible_distribution == 'Debian'
   tags: [configuration, selenium, selenium-firefox]
 
 - name: Add apt repository (if configured and distro is debian)
   apt_repository: repo='deb http://mozilla.debian.net/ jessie-backports firefox-release' state=present update_cache=yes
   when:
-    - selenium_install_firefox
+    - selenium.firefox.install
     - ansible_distribution == 'Debian'
   tags: [configuration, selenium, selenium-firefox]
 
@@ -38,7 +38,7 @@
 - name: Install firefox (if configured)
   package: name=firefox state=present
   when:
-    - selenium_install_firefox
+    - selenium.firefox.install
   tags: [configuration, selenium, selenium-firefox]
 
 ##############################################
@@ -46,17 +46,17 @@
 ##############################################
 
 - name: Create selenium directory
-  file: "path={{ selenium_install_dir }} state=directory recurse=yes"
+  file: "path={{ selenium.dir }} state=directory recurse=yes"
   tags: [configuration, selenium, selenium-create-directory]
 
 - name: Create selenium log file
-  file: "path={{ selenium.log }}"
+  file: path={{ selenium.log }} state=touch mode="u=rw,g=rw,o=rw"
   tags: [configuration, selenium, selenium-create-directory]
 
 - name: Download Selenium
   get_url:
-    url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
-    dest: "{{ selenium_install_dir }}/selenium-server-standalone-{{ selenium_version }}.jar"
+    url: "http://selenium-release.storage.googleapis.com/{{ selenium.version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
+    dest: "{{ selenium.dir }}/selenium-server-standalone-{{ selenium.version }}.jar"
   tags: [configuration, selenium, selenium-download]
 
 - name: Check system manager
@@ -68,7 +68,7 @@
 - name: Install start script
   template:
     src: "selenium-start.j2"
-    dest: "{{ selenium_install_dir }}/start.sh"
+    dest: "{{ selenium.dir }}/start.sh"
     owner: root
     group: root
     mode: 0755
@@ -125,7 +125,7 @@
 #  when:
 #    - ansible_distribution == 'Ubuntu'
 #    - ansible_distribution_version|int < 13
-#    - selenium_install_chrome
+#    - selenium.chrome.install
 #  tags: [configuration, selenium, selenium-chrome]
 #
 ## Chrome for CentOS 6
@@ -136,7 +136,7 @@
 #    mode: 0755
 #    validate_certs: no
 #  when:
-#    - selenium_install_chrome
+#    - selenium.chrome.install
 #    - ansible_distribution == 'CentOS'
 #    - ansible_distribution_version|int < 7
 #  tags: [configuration, selenium, selenium-chrome]
@@ -144,7 +144,7 @@
 #- name: Execute chrome installer (if configured, CentOS < 7)
 #  script: /tmp/install_chrome.sh -f
 #  when:
-#    - selenium_install_chrome
+#    - selenium.chrome.install
 #    - ansible_distribution == 'CentOS'
 #    - ansible_distribution_version|int < 7
 #  tags: [configuration, selenium, selenium-chrome]
@@ -155,7 +155,7 @@
 #    deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 #    state: present
 #  when:
-#    - selenium_install_chrome
+#    - selenium.chrome.install
 #    - ansible_os_family == 'Debian'
 #    - (ansible_distribution != 'Ubuntu' or ansible_distribution_version|int > 12)
 #  tags: [configuration, selenium, selenium-chrome]
@@ -166,7 +166,7 @@
 #    name: https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
 #    state: present
 #  when:
-#    - selenium_install_chrome
+#    - selenium.chrome.install
 #    - ansible_os_family == 'RedHat'
 #    - (ansible_distribution != 'CentOS' or ansible_distribution_version|int > 6)
 #  tags: [configuration, selenium, selenium-chrome]
@@ -177,7 +177,7 @@
 #    url: http://chromedriver.storage.googleapis.com/LATEST_RELEASE
 #    return_content: yes
 #  register: chromedriver_latest
-#  when: selenium_install_chrome
+#  when: selenium.chrome.install
 #  tags: [configuration, selenium, selenium-chrome]
 #
 #- name: Install chromedriver
@@ -186,5 +186,5 @@
 #    dest: /usr/bin
 #    mode: 0755
 #    copy: no
-#  when: selenium_install_chrome
+#  when: selenium.chrome.install
 #  tags: [configuration, selenium, selenium-chrome]
