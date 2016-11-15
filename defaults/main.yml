@@ -1,9 +1,7 @@
 ---
 # defaults file for selenium
-selenium:
-  log: /opt/selenium/selenium.log
-  dir: /opt/selenium
-  install:
-    firefox: no
-    chrome: yes
-  version: "2.53.0"
+selenium_log: /opt/selenium/selenium.log
+selenium_install_dir: /opt/selenium
+selenium_version: "2.53.0"
+selenium_install_firefox: no
+selenium_install_chrome: yes

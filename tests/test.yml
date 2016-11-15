@@ -53,7 +53,7 @@
         changed_when: False
 
       - name: Get log file
-        shell: cat {{ selenium.log }}
+        shell: cat {{ selenium_log }}
         when: selenium_system_manager.stdout == 'sysv'
         register: result_log
         changed_when: False

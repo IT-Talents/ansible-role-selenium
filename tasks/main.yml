@@ -19,45 +19,50 @@
 #                 FIREFOX                    #
 ##############################################
 
-# Prepare firefox install for debian 8
-- name: Install key package for firefox (if configured and distro is debian)
-  apt: deb=https://mozilla.debian.net/pkg-mozilla-archive-keyring_1.1_all.deb state=present
-  when:
-    - selenium.firefox.install
-    - ansible_distribution == 'Debian'
-  tags: [configuration, selenium, selenium-firefox]
+- block:
+  # Prepare firefox install for debian 8
+  - name: Install key package for firefox (if configured and distro is debian)
+    apt: deb=https://mozilla.debian.net/pkg-mozilla-archive-keyring_1.1_all.deb state=present
+    when: ansible_distribution == 'Debian'
+    tags: [configuration, selenium, selenium-firefox]
 
-- name: Add apt repository (if configured and distro is debian)
-  apt_repository: repo='deb http://mozilla.debian.net/ jessie-backports firefox-release' state=present update_cache=yes
-  when:
-    - selenium.firefox.install
-    - ansible_distribution == 'Debian'
-  tags: [configuration, selenium, selenium-firefox]
+  - name: Add apt repository (if configured and distro is debian)
+    apt_repository: repo='deb http://mozilla.debian.net/ jessie-backports firefox-release' state=present update_cache=yes
+    when: ansible_distribution == 'Debian'
+    tags: [configuration, selenium, selenium-firefox]
 
-# Install firefox
-- name: Install firefox (if configured)
-  package: name=firefox state=present
-  when:
-    - selenium.firefox.install
-  tags: [configuration, selenium, selenium-firefox]
+  # Install firefox
+  - name: Install firefox (if configured)
+    package: name=firefox state=present
+    tags: [configuration, selenium, selenium-firefox]
+  when: selenium_install_firefox
 
 ##############################################
 #                 SELENIUM                   #
 ##############################################
 
 - name: Create selenium directory
-  file: "path={{ selenium.dir }} state=directory recurse=yes"
+  file: "path={{ selenium_install_dir }} state=directory recurse=yes"
   tags: [configuration, selenium, selenium-create-directory]
 
 - name: Create selenium log file
-  file: path={{ selenium.log }} state=touch mode="u=rw,g=rw,o=rw"
+  file: path={{ selenium_log }} state=touch mode="u=rw,g=rw,o=rw"
   tags: [configuration, selenium, selenium-create-directory]
 
 - name: Download Selenium
   get_url:
-    url: "http://selenium-release.storage.googleapis.com/{{ selenium.version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
-    dest: "{{ selenium.dir }}/selenium-server-standalone-{{ selenium.version }}.jar"
+    url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
+    dest: "{{ selenium_install_dir }}/selenium-server-standalone-{{ selenium_version }}.jar"
   tags: [configuration, selenium, selenium-download]
+
+- name: Install start script
+  template:
+    src: "selenium-start.j2"
+    dest: "{{ selenium_install_dir }}/start.sh"
+    owner: root
+    group: root
+    mode: 0755
+  tags: [configuration, selenium, selenium-install]
 
 - name: Check system manager
   shell: pidof systemd > /dev/null && printf "systemd" || printf "sysv"
@@ -65,55 +70,45 @@
   changed_when: False
   tags: [configuration, selenium, selenium-install]
 
-- name: Install start script
-  template:
-    src: "selenium-start.j2"
-    dest: "{{ selenium.dir }}/start.sh"
-    owner: root
-    group: root
-    mode: 0755
-  tags: [configuration, selenium, selenium-install]
+  # Selenium service via sysv
+- block:
+  - name: Install init.d script (for systems without systemd)
+    template:
+      src: "selenium-init-{{ ansible_os_family }}.j2"
+      dest: /etc/init.d/selenium
+      owner: root
+      group: root
+      mode: 0755
+    tags: [configuration, selenium, selenium-install]
 
-# Selenium service via sysv
-- name: Install init.d script (for systems without systemd)
-  template:
-    src: "selenium-init-{{ ansible_os_family }}.j2"
-    dest: /etc/init.d/selenium
-    owner: root
-    group: root
-    mode: 0755
-  when: selenium_system_manager.stdout == 'sysv'
-  tags: [configuration, selenium, selenium-install]
+  - name: Start selenium service if running via sysv
+    shell: /etc/init.d/selenium restart
+    changed_when: False
+    ignore_errors: yes
+    register: selenium_init_start
+    tags: [configuration, selenium, selenium-run]
 
-- name: Start selenium service if running via sysv
-  shell: /etc/init.d/selenium restart
+  - name: Ensure selenium service is running via ps
+    shell: ps -ef |  grep "/bin/sh /usr/bin/xvfb-run /usr/bin/java -client -jar" | grep -v grep
+    changed_when: False
+    tags: [configuration, selenium, selenium-run]
   when: selenium_system_manager.stdout == 'sysv'
-  changed_when: False
-  ignore_errors: yes
-  register: selenium_init_start
-  tags: [configuration, selenium, selenium-run]
-
-- name: Ensure selenium service is running via ps
-  shell: ps -ef |  grep "/bin/sh /usr/bin/xvfb-run /usr/bin/java -client -jar" | grep -v grep
-  when: selenium_system_manager.stdout == 'sysv'
-  changed_when: False
-  tags: [configuration, selenium, selenium-run]
 
 # Selenium service via systemd
-- name: Install systemd unit file (for systems supporting systemd)
-  template:
-    src: selenium-unit.j2
-    dest: /etc/systemd/system/selenium.service
-    owner: root
-    group: root
-    mode: 0644
-  when: selenium_system_manager.stdout == 'systemd'
-  tags: [configuration, selenium, selenium-install]
+- block:
+  - name: Install systemd unit file (for systems supporting systemd)
+    template:
+      src: selenium-unit.j2
+      dest: /etc/systemd/system/selenium.service
+      owner: root
+      group: root
+      mode: 0644
+    tags: [configuration, selenium, selenium-install]
 
-- name: Ensure selenium service is running via systemd
-  service: name=selenium state=started enabled=yes
+  - name: Ensure selenium service is running via systemd
+    service: name=selenium state=started enabled=yes
+    tags: [configuration, selenium, selenium-run]
   when: selenium_system_manager.stdout == 'systemd'
-  tags: [configuration, selenium, selenium-run]
 
 ##############################################
 #                 CHROME                     #

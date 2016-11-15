@@ -14,8 +14,8 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 DISPLAY_ID=":1"
 RUN_AS=root
 
-DAEMON_PID_FILE="{{ selenium.dir }}/selenium.pid"
-SELENIUM_LOG_FILE="{{ selenium.log }}"
+DAEMON_PID_FILE="{{ selenium_install_dir }}/selenium.pid"
+SELENIUM_LOG_FILE="{{ selenium_log }}"
 MAX=10
 
 export DISPLAY="$DISPLAY_ID"
@@ -26,13 +26,13 @@ set -e
 
 case "$1" in
     start)
-        if status_of_proc -p $DAEMON_PID_FILE "{{ selenium.dir }}/start.sh" {{ selenium.dir }}/start.sh > /dev/null; then
+        if status_of_proc -p $DAEMON_PID_FILE "{{ selenium_install_dir }}/start.sh" {{ selenium_install_dir }}/start.sh > /dev/null; then
             log_progress_msg "Service already running"
         else
             echo "Starting selenium server" >> $SELENIUM_LOG_FILE
             log_daemon_msg "Starting Selenium server"
             log_progress_msg "selenium"
-            start-stop-daemon -c $RUN_AS --start --quiet --background --pidfile $DAEMON_PID_FILE --make-pidfile --exec {{ selenium.dir }}/start.sh
+            start-stop-daemon -c $RUN_AS --start --quiet --background --pidfile $DAEMON_PID_FILE --make-pidfile --exec {{ selenium_install_dir }}/start.sh
 
             COUNTER=0;
             while ! tail -n1 $SELENIUM_LOG_FILE | grep "Selenium Server is up and running" > /dev/null; do
@@ -46,7 +46,7 @@ case "$1" in
         ;;
 
     stop)
-        if status_of_proc -p $DAEMON_PID_FILE "{{ selenium.dir }}/start.sh" {{ selenium.dir }}/start.sh > /dev/null; then
+        if status_of_proc -p $DAEMON_PID_FILE "{{ selenium_install_dir }}/start.sh" {{ selenium_install_dir }}/start.sh > /dev/null; then
             log_daemon_msg "Stopping Selenium server"
             log_progress_msg "selenium"
             DAEMON_PID=$(cat $DAEMON_PID_FILE)
@@ -67,7 +67,7 @@ case "$1" in
 	;;
 
 	status)
-        status_of_proc -p $DAEMON_PID_FILE "{{ selenium.dir }}/start.sh" {{ selenium.dir }}/start.sh && exit 0 || exit $?
+        status_of_proc -p $DAEMON_PID_FILE "{{ selenium_install_dir }}/start.sh" {{ selenium_install_dir }}/start.sh && exit 0 || exit $?
     ;;
 
     *)
