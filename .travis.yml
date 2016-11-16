@@ -14,7 +14,7 @@ env:
   - { distro: ubuntu1604, role: test_java8 }
 
 script:
-  - './test.sh -p -i -s -r ${role} -d ${distro}'
+  - './test.sh -p -i -s -r ${role} -o ${distro}'
 
 notifications:
   email: false
