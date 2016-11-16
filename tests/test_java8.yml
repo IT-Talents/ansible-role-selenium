@@ -4,13 +4,6 @@
   vars:
     selenium_java_version: 8
 
-  pre_tasks:
-#    - name: Update apt cache (if distro is debian based)
-#      apt: update_cache=yes
-#      when: ansible_os_family == 'Debian'
-#      changed_when: False
-#      tags: [pre]
-
   roles:
     - role_under_test
 
@@ -19,85 +12,3 @@
       shell: java -version 2>&1 | awk '/version/{print $NF}' | grep "1.{{ selenium_java_version }}"
       changed_when: False
       tags: [post]
-
-    # Check browser installs
-#    - name: Check firefox install
-#      shell: firefox --version
-#      changed_when: False
-#      tags: [post]
-#
-#    - name: Install wget
-#      package: name=wget state=present
-#      changed_when: False
-#      tags: [post]
-#
-#    - name: Install curl
-#      package: name=curl state=present
-#      changed_when: False
-#      tags: [post]
-#
-#    - block:
-#      - pause: seconds=10
-#        when: selenium_system_manager.stdout == 'systemd'
-#
-#      # Check response
-#      - name: Test selenium server response
-#        shell: wget -qO - http://127.0.0.1:4444/wd/hub/status
-#        register: result
-#        changed_when: False
-#
-#      # Check starting firefox session
-#      - name: Try starting firefox session
-#        shell: "{{ selenium_install_dir }}/check.sh"
-#        register: result
-#        changed_when: False
-#
-#      # Check selenium server restart
-#      - name: Test restart selenium server for sysv
-#        shell: /etc/init.d/selenium restart
-#        when: selenium_system_manager.stdout == 'sysv'
-#        changed_when: False
-#
-#      # Check response again
-#      - name: Test selenium server response
-#        shell: wget -qO - http://127.0.0.1:4444/wd/hub/status
-#        register: result
-#        changed_when: False
-#
-#      # if any errors are encountered, print a lot of debug info and then fail
-#      rescue:
-#      - debug: var=result verbosity=2
-#        changed_when: False
-#
-#      - name: Get log file
-#        shell: cat {{ selenium_log }}
-#        when: selenium_system_manager.stdout == 'sysv'
-#        register: result_log
-#        changed_when: False
-#
-#      - debug: var=result_log.stdout_lines verbosity=0
-#        when: selenium_system_manager.stdout == 'sysv'
-#        changed_when: False
-#
-#      - name: Get service status via systemd
-#        shell: service selenium status
-#        when: selenium_system_manager.stdout == 'systemd'
-#        register: result_service
-#        changed_when: False
-#
-#      - debug: var=result_service.stdout_lines verbosity=0
-#        when: selenium_system_manager.stdout == 'systemd'
-#        changed_when: False
-#
-#      - name: Get ps output
-#        shell: ps -x
-#        register: result_ps
-#        changed_when: False
-#
-#      - debug: var=result_ps.stdout_lines verbosity=0
-#        changed_when: False
-#
-#      - fail: msg="Selenium server isn't reachable, see above output for debugging."
-#        changed_when: False
-#
-#      tags: [post]

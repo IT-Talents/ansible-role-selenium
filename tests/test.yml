@@ -2,13 +2,6 @@
 # Test file for selenium
 - hosts: all
 
-  pre_tasks:
-#    - name: Update apt cache (if distro is debian based)
-#      apt: update_cache=yes
-#      when: ansible_os_family == 'Debian'
-#      changed_when: False
-#      tags: [pre]
-
   roles:
     - role_under_test
 
@@ -17,6 +10,13 @@
       shell: java -version 2>&1 | awk '/version/{print $NF}' | grep "1.{{ selenium_java_version }}"
       changed_when: False
       tags: [post]
+
+
+
+
+
+
+
 
     # Check browser installs
 #    - name: Check firefox install

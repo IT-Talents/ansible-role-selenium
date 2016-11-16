@@ -2,12 +2,9 @@
 # Most of the stuff here is monkey patching depdendencies. Sometimes to make sure the correct java packages are avialable
 # or other missing packages
 
-- name: Add ppa for ubuntu < 16 for installing openjdk 8
+- name: Add ppa fpr ubuntu for installing different openjdk versions
   apt_repository: repo='ppa:openjdk-r/ppa'
-  when:
-    - selenium_java_version == 8
-    - ansible_distribution == 'Ubuntu'
-    - ansible_distribution_version|int < 16
+  when: ansible_distribution == 'Ubuntu'
 
 - name: Add ppa for debian for installing openjdk 8
   apt_repository: repo='deb http://ftp.debian.org/debian jessie-backports main' state=present
