@@ -2,7 +2,7 @@
 # Test file for selenium
 - hosts: all
   vars:
-    selenium_server_version: '2.53.1'
+    selenium_server_version: 2.53.1
 
   roles:
     - role_under_test

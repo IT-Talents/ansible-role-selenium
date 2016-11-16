@@ -3,9 +3,6 @@
 #                 PREPARE                    #
 ##############################################
 
-- name: Include OS-Specific variables
-  include_vars: "{{ ansible_os_family }}.yml"
-  tags: [configuration, selenium]
 
 - name: Install xvfb
   package: name={{ selenium_xvfb_package }} state=present
@@ -37,14 +34,6 @@
     group: root
     mode: 0755
   tags: [configuration, selenium, selenium-install]
-
-- name: Install selenium check script
-  template:
-    src: "selenium-check.j2"
-    dest: "{{ selenium_install_dir }}/check.sh"
-    owner: root
-    group: root
-    mode: 0755
 
 - name: Check system manager
   shell: pidof systemd > /dev/null && printf "systemd" || printf "sysv"
@@ -91,6 +80,21 @@
     service: name=selenium state=started enabled=yes
     tags: [configuration, selenium, selenium-run]
   when: selenium_system_manager.stdout == 'systemd'
+
+
+
+
+
+
+
+
+#- name: Install selenium check script
+#  template:
+#    src: "selenium-check.j2"
+#    dest: "{{ selenium_install_dir }}/check.sh"
+#    owner: root
+#    group: root
+#    mode: 0755
 
 ##############################################
 #                 CHROME                     #

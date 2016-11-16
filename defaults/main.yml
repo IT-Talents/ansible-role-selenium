@@ -1,15 +1,14 @@
 ---
 
-selenium_log: /opt/selenium/selenium.log
-selenium_install_dir: /opt/selenium
-selenium_server_version: '3.0.1'
-
+selenium_log:                       /opt/selenium/selenium.log
+selenium_install_dir:               /opt/selenium
+selenium_server_version:            3.0.1
 
 
 
 # firefox install vars
-selenium_firefox_install_mode: package
-selenium_firefox_install_version: '48.0.2'
+selenium_firefox_install_mode:      package
+selenium_firefox_install_version:   48.0.2
 
 # geckodriver install vars
 #selenium_geckodriver_version: '0.11.1'
