@@ -2,7 +2,10 @@
 
 selenium_log: /opt/selenium/selenium.log
 selenium_install_dir: /opt/selenium
-selenium_server_version: '3.0'
+selenium_server_version: '3.0.1'
+
+
+
 
 # firefox install vars
 selenium_firefox_install_mode: package
@@ -16,3 +19,5 @@ selenium_firefox_install_version: '48.0.2'
 # defaults file for selenium
 #selenium_firefox_install_mode: archive
 #selenium_firefox_install_archive_version: '48.0.2'
+
+selenium_server_download: "http://selenium-release.storage.googleapis.com/{{ selenium_server_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_server_version }}.jar"
