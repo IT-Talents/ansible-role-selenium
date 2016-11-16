@@ -5,6 +5,7 @@ set -e
 PULL=0
 IDEM=0
 REMOVE=0
+ROLE=test
 SYNTAX=0
 VERBOSE=
 
@@ -13,17 +14,21 @@ while [[ $# -gt 1 ]]
     key="$1"
 
     case $key in
-        -d|--distro)
+        -o|--os)
         DISTRO="$2"
         shift
         ;;
         -p|--pull)
         PULL=1
         ;;
+        -r|--role)
+        ROLE="$2"
+        shift
+        ;;
         -i|--idempotency)
         IDEM=1
         ;;
-        -r|--remove)
+        -d|--delete)
         REMOVE=1
         ;;
         -s|--syntax)
@@ -40,11 +45,12 @@ while [[ $# -gt 1 ]]
 done
 
 if [ "${DISTRO}" == "" ] ; then
-    echo "usage: ./start.sh [OPTIONS]... -d|--distro [DISTRO] "
-    echo "   -d|-distro        sets the distro to be used (ubuntu1604, ubuntu1404, ubuntu1204, centos7, centos6, debian8)"
+    echo "usage: ./start.sh [OPTIONS]... -o|--os [DISTRO] "
+    echo "   -o|-os            sets the distro to be used (ubuntu1604, ubuntu1404, ubuntu1204, centos7, centos6, debian8)"
     echo "   -p|-pull          distro will be pulled from repo"
     echo "   -i|-idempotency   idempotency check will be run"
-    echo "   -r|-remove        removes ALL current docker containers before running any checks"
+    echo "   -d|-delete        removes ALL current docker containers before running any checks"
+    echo "   -r|-role          which role to execute, default 'test'"
     echo "   -s|-syntax        runs syntax check"
     exit 1;
 fi
@@ -66,7 +72,7 @@ INITS[centos7]="/usr/lib/systemd/systemd"
 INITS[debian8]="/lib/systemd/systemd"
 
 declare -A OPTS
-OPTS[ubuntu1604]="--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
+OPTS[ubuntu1604]="--privileged"
 OPTS[ubuntu1404]="--privileged"
 OPTS[ubuntu1204]="--privileged"
 OPTS[centos6]="--privileged"
@@ -101,11 +107,11 @@ docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-galaxy install
 
 if [ ${SYNTAX} -eq 1 ] ; then
     echo "checking syntax..."
-    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml --syntax-check
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/${ROLE}.yml --syntax-check
 fi
 
 echo "first test run..."
-docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook ${VERBOSE} /etc/ansible/roles/role_under_test/tests/test.yml
+docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook ${VERBOSE} /etc/ansible/roles/role_under_test/tests/${ROLE}.yml
 
 # Test role idempotence.
 #  - idempotence=$(mktemp)

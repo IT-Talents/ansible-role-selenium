@@ -1,0 +1,41 @@
+---
+# Most of the stuff here is monkey patching depdendencies. Sometimes to make sure the correct java packages are avialable
+# or other missing packages
+
+- name: Install dependencies
+  package: name=unzip state=present
+
+#- name: Install bzip2 when installing from archive
+#  package: name=bzip2 state=present
+#  when: selenium_firefox_install_mode == 'archive'
+#
+#- name: Install gtk3 if firefox > 45
+#  package: name=bzip2 state=present
+#  when:
+#      - ansible_os_family == 'RedHat'
+#      - selenium_firefox_install_version|int > 45
+
+- name: Add ppa for ubuntu < 16 for installing openjdk 8
+  apt_repository: repo='ppa:openjdk-r/ppa' update_cache=yes
+  when:
+    - selenium_java_version == 8
+    - ansible_distribution == 'Ubuntu'
+    - ansible_distribution_version|int < 16
+
+- name: Add ppa for debian for installing openjdk 8
+  apt_repository: repo='deb http://ftp.debian.org/debian jessie-backports main' state=present update_cache=yes
+  when:
+    - selenium_java_version == 8
+    - ansible_os_family == 'Debian'
+
+- set_fact:
+    selenium_java_package: openjdk-7-jdk
+  when:
+    - selenium_java_version == 7
+    - ansible_os_family == 'Debian'
+
+- set_fact:
+    selenium_java_package: openjdk-8-jdk
+  when:
+    - selenium_java_version == 8
+    - ansible_os_family == 'Debian'

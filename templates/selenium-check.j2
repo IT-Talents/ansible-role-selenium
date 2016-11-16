@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+SELENIUM_ID=`curl -s -X POST http://127.0.0.1:4444/wd/hub/session -d '{"desiredCapabilities":{"browserName":"firefox"}}'|awk -F'"' '{print $6}'`
+
+curl -s -X POST http://127.0.0.1:4444/wd/hub/session/$SELENIUM_ID/url -d '{"url":"http://www.google.com"}'
+curl -s -X POST http://127.0.0.1:4444/wd/hub/session/$SELENIUM_ID/element -d '{"using":"id","value":"gbqfq"}'
+curl -s -X POST http://127.0.0.1:4444/wd/hub/session/$SELENIUM_ID/element/0/value -d {"value":["selenium"]}
+curl -s -X POST http://127.0.0.1:4444/wd/hub/session/$SELENIUM_ID/element -d '{"using":"id","value":"gbqfb"}'
+curl -s -X POST http://127.0.0.1:4444/wd/hub/session/$SELENIUM_ID/element/1/click
+curl -s -X DELETE http://127.0.0.1:4444/wd/hub/session/$SELENIUM_ID/window

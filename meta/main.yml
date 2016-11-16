@@ -21,4 +21,12 @@ galaxy_info:
   categories:
   - web
 dependencies:
-  - geerlingguy.java
+  - role: '../roles/pre'
+
+  - role: geerlingguy.java
+    java_packages: "{{ selenium_java_package }}"
+
+#  - role: arknoll.firefox
+#    firefox_version: "{{ selenium_firefox_install_version }}"
+#    firefox_release_root_url: 'https://ftp.mozilla.org/pub/mozilla.org/firefox/releases'
+#    when: selenium_firefox_install_mode == 'archive'

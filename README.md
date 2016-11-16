@@ -1,22 +1,50 @@
 ## selenium [![Build Status](https://travis-ci.org/arknoll/ansible-role-selenium.svg?branch=master)](https://travis-ci.org/arknoll/ansible-role-selenium)
 
-Set up selenium and Firefox for running selenium tests.
+Set up selenium and Firefox for running selenium tests. Following setups are supported:
+
+Debian 8:
+
+- @latest: firefox via http://mozilla.debian.net/ (current 49) with selenium 3.0 and java 8
+- @official: firefox via official repo (current XXX) with selenium XXX and java XXX
+
+Ubuntu 16.04:
+
+- @official: firefox via official repo (current 49.0.2) with selenium 3.0 and java 8
+
+Ubuntu 14.04:
+
+- @official: firefox via official repo (current 49.0.2) with selenium 3.0 and java 8
+
+Ubuntu 12.04:
+
+- @official: firefox via official repo (current 49.0.2) with selenium 3.0 and java 8
+
+Centos 7:
+
+- @official: firefox via official repo (current 45.4.0) with selenium 2.53.1 and java 7
+- @version: every version via tar archive from https://ftp.mozilla.org (FF > 45 installs gtk+3) 
+  - FF < 48: java 7 with selenium server 2.53.1
+  - FF >= 48: java 8 with selenium server 3.0.1
+
 
 #### Requirements
 
-* `java`
+None
 
 #### Variables
 
 * `selenium_install_dir`: [default: `/opt/selenium`] Install directory
 * `selenium_log`: [default: `/opt/selenium/selenium.log`] Log file
-* `selenium_version`: [default: `2.53.0`] Install version
+* `selenium_version`: [default: `3.0.1`] Install version
 * `selenium_install_firefox`: [default: `no`] Whether to install FireFox
 * `selenium_install_chrome`: [default: `yes`] Whether to install Google Chrome
 
 ## Dependencies
 
+* `telusdigital.apt-repository`
+* `jnv.debian-backports`
 * `geerlingguy.java`
+* `arknoll.firefox`
 
 #### Example
 

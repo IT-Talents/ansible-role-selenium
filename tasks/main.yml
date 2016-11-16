@@ -7,10 +7,6 @@
   include_vars: "{{ ansible_os_family }}.yml"
   tags: [configuration, selenium]
 
-- name: Install dependencies
-  package: name=unzip state=present
-  tags: [configuration, selenium]
-
 - name: Install xvfb
   package: name={{ selenium_xvfb_package }} state=present
   tags: [configuration, selenium, selenium-xvfb]
@@ -19,96 +15,116 @@
 #                 FIREFOX                    #
 ##############################################
 
-- block:
-  # Prepare firefox install for debian 8
-  - name: Install key package for firefox (if configured and distro is debian)
-    apt: deb=https://mozilla.debian.net/pkg-mozilla-archive-keyring_1.1_all.deb state=present
-    when: ansible_distribution == 'Debian'
-    tags: [configuration, selenium, selenium-firefox]
-
-  - name: Add apt repository (if configured and distro is debian)
-    apt_repository: repo='deb http://mozilla.debian.net/ jessie-backports firefox-release' state=present update_cache=yes
-    when: ansible_distribution == 'Debian'
-    tags: [configuration, selenium, selenium-firefox]
-
-  # Install firefox
-  - name: Install firefox (if configured)
-    package: name=firefox state=present
-    tags: [configuration, selenium, selenium-firefox]
-  when: selenium_install_firefox
+#- block:
+#  # Prepare firefox install for debian 8
+#  - name: Install key package for firefox (if configured and distro is debian)
+#    apt: deb=https://mozilla.debian.net/pkg-mozilla-archive-keyring_1.1_all.deb state=present
+#    when: ansible_distribution == 'Debian'
+#    tags: [configuration, selenium, selenium-firefox]
+#
+#  - name: Add apt repository (if configured and distro is debian)
+#    apt_repository: repo='deb http://mozilla.debian.net/ jessie-backports firefox-release' state=present update_cache=yes
+#    when: ansible_distribution == 'Debian'
+#    tags: [configuration, selenium, selenium-firefox]
+#
+#  # Install firefox
+#  - name: Install firefox (if configured)
+#    package: name=firefox state=present
+#    tags: [configuration, selenium, selenium-firefox]
+#
+#  - name: Download and install GeckoDriver
+#    unarchive:
+#      src: "{{ selenium_geckodriver_download_url }}"
+#      dest: "{{ selenium_geckodriver_install_path }}"
+#      copy: no
+#
+#  - file:
+#      path: "{{ selenium_geckodriver_install_path }}/geckodriver"
+#      owner: root
+#      group: root
+#      mode: 0755
+#      state: file
 
 ##############################################
 #                 SELENIUM                   #
 ##############################################
 
-- name: Create selenium directory
-  file: "path={{ selenium_install_dir }} state=directory recurse=yes"
-  tags: [configuration, selenium, selenium-create-directory]
-
-- name: Create selenium log file
-  file: path={{ selenium_log }} state=touch mode="u=rw,g=rw,o=rw"
-  tags: [configuration, selenium, selenium-create-directory]
-
-- name: Download Selenium
-  get_url:
-    url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
-    dest: "{{ selenium_install_dir }}/selenium-server-standalone-{{ selenium_version }}.jar"
-  tags: [configuration, selenium, selenium-download]
-
-- name: Install start script
-  template:
-    src: "selenium-start.j2"
-    dest: "{{ selenium_install_dir }}/start.sh"
-    owner: root
-    group: root
-    mode: 0755
-  tags: [configuration, selenium, selenium-install]
-
-- name: Check system manager
-  shell: pidof systemd > /dev/null && printf "systemd" || printf "sysv"
-  register: selenium_system_manager
-  changed_when: False
-  tags: [configuration, selenium, selenium-install]
-
-  # Selenium service via sysv
-- block:
-  - name: Install init.d script (for systems without systemd)
-    template:
-      src: "selenium-init-{{ ansible_os_family }}.j2"
-      dest: /etc/init.d/selenium
-      owner: root
-      group: root
-      mode: 0755
-    tags: [configuration, selenium, selenium-install]
-
-  - name: Start selenium service if running via sysv
-    shell: /etc/init.d/selenium restart
-    changed_when: False
-    ignore_errors: yes
-    register: selenium_init_start
-    tags: [configuration, selenium, selenium-run]
-
-  - name: Ensure selenium service is running via ps
-    shell: ps -ef |  grep "/bin/sh /usr/bin/xvfb-run /usr/bin/java -client -jar" | grep -v grep
-    changed_when: False
-    tags: [configuration, selenium, selenium-run]
-  when: selenium_system_manager.stdout == 'sysv'
-
-# Selenium service via systemd
-- block:
-  - name: Install systemd unit file (for systems supporting systemd)
-    template:
-      src: selenium-unit.j2
-      dest: /etc/systemd/system/selenium.service
-      owner: root
-      group: root
-      mode: 0644
-    tags: [configuration, selenium, selenium-install]
-
-  - name: Ensure selenium service is running via systemd
-    service: name=selenium state=started enabled=yes
-    tags: [configuration, selenium, selenium-run]
-  when: selenium_system_manager.stdout == 'systemd'
+#- name: Create selenium directory
+#  file: "path={{ selenium_install_dir }} state=directory recurse=yes"
+#  tags: [configuration, selenium, selenium-create-directory]
+#
+#- name: Create selenium log file
+#  file: path={{ selenium_log }} state=touch mode="u=rw,g=rw,o=rw"
+#  tags: [configuration, selenium, selenium-create-directory]
+#
+#- name: Download Selenium
+#  get_url:
+#    url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
+#    dest: "{{ selenium_install_dir }}/selenium-server-standalone-{{ selenium_version }}.jar"
+#  tags: [configuration, selenium, selenium-download]
+#
+#- name: Install start script
+#  template:
+#    src: "selenium-start.j2"
+#    dest: "{{ selenium_install_dir }}/start.sh"
+#    owner: root
+#    group: root
+#    mode: 0755
+#  tags: [configuration, selenium, selenium-install]
+#
+#- name: Install selenium check script
+#  template:
+#    src: "selenium-check.j2"
+#    dest: "{{ selenium_install_dir }}/check.sh"
+#    owner: root
+#    group: root
+#    mode: 0755
+#
+#- name: Check system manager
+#  shell: pidof systemd > /dev/null && printf "systemd" || printf "sysv"
+#  register: selenium_system_manager
+#  changed_when: False
+#  tags: [configuration, selenium, selenium-install]
+#
+#  # Selenium service via sysv
+#- block:
+#  - name: Install init.d script (for systems without systemd)
+#    template:
+#      src: "selenium-init-{{ ansible_os_family }}.j2"
+#      dest: /etc/init.d/selenium
+#      owner: root
+#      group: root
+#      mode: 0755
+#    tags: [configuration, selenium, selenium-install]
+#
+#  - name: Start selenium service if running via sysv
+#    shell: /etc/init.d/selenium restart
+#    changed_when: False
+#    ignore_errors: yes
+#    register: selenium_init_start
+#    tags: [configuration, selenium, selenium-run]
+#
+#  - name: Ensure selenium service is running via ps
+#    shell: ps -ef |  grep "/bin/sh /usr/bin/xvfb-run /usr/bin/java -client -jar" | grep -v grep
+#    changed_when: False
+#    tags: [configuration, selenium, selenium-run]
+#  when: selenium_system_manager.stdout == 'sysv'
+#
+## Selenium service via systemd
+#- block:
+#  - name: Install systemd unit file (for systems supporting systemd)
+#    template:
+#      src: selenium-unit.j2
+#      dest: /etc/systemd/system/selenium.service
+#      owner: root
+#      group: root
+#      mode: 0644
+#    tags: [configuration, selenium, selenium-install]
+#
+#  - name: Ensure selenium service is running via systemd
+#    service: name=selenium state=started enabled=yes
+#    tags: [configuration, selenium, selenium-run]
+#  when: selenium_system_manager.stdout == 'systemd'
 
 ##############################################
 #                 CHROME                     #

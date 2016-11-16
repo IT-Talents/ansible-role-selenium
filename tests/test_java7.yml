@@ -1,6 +1,8 @@
 ---
 # Test file for selenium
 - hosts: all
+  vars:
+    selenium_java_version: 7
 
   pre_tasks:
 #    - name: Update apt cache (if distro is debian based)
