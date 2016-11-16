@@ -2,38 +2,36 @@
 # Most of the stuff here is monkey patching depdendencies. Sometimes to make sure the correct java packages are avialable
 # or other missing packages
 
-- name: Add ppa fpr ubuntu for installing different openjdk versions
+# next two tasks prepare the later included java role to be able to install different openjdk versions for debian based systems
+- name: Add ubuntu ppa for installing different openjdk versions
   apt_repository: repo='ppa:openjdk-r/ppa'
   when: ansible_distribution == 'Ubuntu'
-
-- name: Add ppa for debian for installing openjdk 8
+- name: Add debian ppa for installing openjdk 8
   apt_repository: repo='deb http://ftp.debian.org/debian jessie-backports main' state=present
-  when:
-    - selenium_java_version == 8
-    - ansible_distribution == 'Debian'
+  when: selenium_server_version[0:1] == '3' and ansible_distribution == 'Debian'
 
+# unzip is needed to extract the geckodriver when selenium >= 3
 - name: Install unzip
   package: name=unzip state=present update_cache=yes
+  when: selenium_server_version[0:1] == '3'
 
+# bzip2 is needed by the external firefox role when firefox install mode is "archive"
+# @todo: fix firefox role
 - name: Install bzip2
   package: name=bzip2 state=present update_cache=yes
+  when: selenium_firefox_install_mode == 'archive'
 
+# set java package name for different distros
+# @todo: fix java role
 - set_fact:
     selenium_java_package: openjdk-7-jdk
-  when:
-    - selenium_java_version == 7
-    - ansible_os_family == 'Debian'
-
+    selenium_java_version: 7
+  when: selenium_server_version[0:1] == '2' and ansible_os_family == 'Debian'
 - set_fact:
     selenium_java_package: openjdk-8-jdk
-  when:
-    - selenium_java_version == 8
-    - ansible_os_family == 'Debian'
+    selenium_java_version: 8
+  when: selenium_server_version[0:1] == '3' and ansible_os_family == 'Debian'
 
-#- name: Install bzip2 when installing from archive
-#  package: name=bzip2 state=present
-#  when: selenium_firefox_install_mode == 'archive'
-#
 #- name: Install gtk3 if firefox > 45
 #  package: name=bzip2 state=present
 #  when:

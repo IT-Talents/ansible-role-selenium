@@ -35,7 +35,7 @@ None
 
 * `selenium_install_dir`: [default: `/opt/selenium`] Install directory
 * `selenium_log`: [default: `/opt/selenium/selenium.log`] Log file
-* `selenium_version`: [default: `3.0.1`] Install version
+* `selenium_server_version`: [default: `3.0.1`] Install version
 * `selenium_install_firefox`: [default: `no`] Whether to install FireFox
 * `selenium_install_chrome`: [default: `yes`] Whether to install Google Chrome
 

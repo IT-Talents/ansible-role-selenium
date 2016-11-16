@@ -2,13 +2,13 @@
 # Test file for selenium
 - hosts: all
   vars:
-    selenium_java_version: 7
+    selenium_server_version: '2.53'
 
   roles:
     - role_under_test
 
   post_tasks:
     - name: Check java install
-      shell: java -version 2>&1 | awk '/version/{print $NF}' | grep "1.{{ selenium_java_version }}"
+      shell: java -version 2>&1 | awk '/version/{print $NF}' | grep "1.7"
       changed_when: False
       tags: [post]

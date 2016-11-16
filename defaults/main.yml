@@ -1,20 +1,13 @@
 ---
-# base install vars
+
 selenium_log: /opt/selenium/selenium.log
 selenium_install_dir: /opt/selenium
-selenium_version: '3.0.1'
-
-# java install vars
 selenium_java_version: 8
-selenium_java_package: openjdk-8-jdk
-
-
-
-
+selenium_server_version: '3.0'
 
 # firefox install vars
-#selenium_firefox_install_mode: archive
-#selenium_firefox_install_version: '48.0.2'
+selenium_firefox_install_mode: archive
+selenium_firefox_install_version: '48.0.2'
 
 # geckodriver install vars
 #selenium_geckodriver_version: '0.11.1'

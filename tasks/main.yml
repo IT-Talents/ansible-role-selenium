@@ -59,8 +59,8 @@
 #
 #- name: Download Selenium
 #  get_url:
-#    url: "http://selenium-release.storage.googleapis.com/{{ selenium_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_version }}.jar"
-#    dest: "{{ selenium_install_dir }}/selenium-server-standalone-{{ selenium_version }}.jar"
+#    url: "http://selenium-release.storage.googleapis.com/{{ selenium_server_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_server_version }}.jar"
+#    dest: "{{ selenium_install_dir }}/selenium-server-standalone-{{ selenium_server_version }}.jar"
 #  tags: [configuration, selenium, selenium-download]
 #
 #- name: Install start script
