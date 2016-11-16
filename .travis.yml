@@ -9,11 +9,13 @@ env:
   - { distro: ubuntu1204, role: test_java7 }
   - { distro: ubuntu1404, role: test_java7 }
   - { distro: ubuntu1604, role: test_java7 }
+  - { distro: centos7,    role: test_java7 }
 
   - { distro: debian8,    role: test_java8 }
   - { distro: ubuntu1204, role: test_java8 }
   - { distro: ubuntu1404, role: test_java8 }
   - { distro: ubuntu1604, role: test_java8 }
+  - { distro: centos7,    role: test_java8 }
 
 script:
   - './test.sh -p -i -s -r ${role} -o ${distro}'
