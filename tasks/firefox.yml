@@ -40,7 +40,7 @@
 - block:
   - name: Download and install GeckoDriver
     unarchive:
-      src: "{{ selenium_geckodriver_download_url }}"
+      src: "{{ selenium_geckodriver_download }}"
       dest: "{{ selenium_geckodriver_dir }}"
       copy: no
 
