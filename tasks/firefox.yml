@@ -1,9 +1,24 @@
 ---
-- name: Install firefox from package
-  package: name=firefox state=present
+######################################################################
+###############             PACKAGE                   ################
+######################################################################
+
+- block:
+  - name: Install key package for firefox
+    apt: deb=https://mozilla.debian.net/pkg-mozilla-archive-keyring_1.1_all.deb state=present
+    when: ansible_distribution == 'Debian'
+
+  - name: Add apt repository
+    apt_repository: repo='deb http://mozilla.debian.net/ jessie-backports firefox-release' state=present
+    when: ansible_distribution == 'Debian'
+
+  - name: Install firefox from package
+    package: name=firefox state=present update_cache=yes
   when: selenium_firefox_install_mode == 'package'
 
-
+######################################################################
+###############             COMPATIBILITY             ################
+######################################################################
 
 - name: Check firefox version
   shell: firefox --version | sed 's/[^0-9.]*\([0-9.]*\).*/\1/'
@@ -18,15 +33,21 @@
   when: firefox_version_result.stdout|int < 48 and selenium_server_version[0:1] == '3'
   changed_when: false
 
-#- name: Download and install GeckoDriver
-#  unarchive:
-#    src: "{{ selenium_geckodriver_download_url }}"
-#    dest: "{{ selenium_geckodriver_install_path }}"
-#    copy: no
-#
-#- file:
-#    path: "{{ selenium_geckodriver_install_path }}/geckodriver"
-#    owner: root
-#    group: root
-#    mode: 0755
-#    state: file
+######################################################################
+###############             GECKODRIVER               ################
+######################################################################
+
+- block:
+  - name: Download and install GeckoDriver
+    unarchive:
+      src: "{{ selenium_geckodriver_download_url }}"
+      dest: "{{ selenium_geckodriver_install_path }}"
+      copy: no
+
+  - file:
+      path: "{{ selenium_geckodriver_install_path }}/geckodriver"
+      owner: root
+      group: root
+      mode: 0755
+      state: file
+  when: selenium_server_version[0:1] == '3'
