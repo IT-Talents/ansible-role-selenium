@@ -113,7 +113,7 @@ fi
 echo "first test run..."
 docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook ${VERBOSE} /etc/ansible/roles/role_under_test/tests/${ROLE}.yml
 
-# Test role idempotence.
+# Test role idempotence. @todo
 #  - idempotence=$(mktemp)
 #  - sudo docker exec "$(cat ${container_id})" ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml | tee -a ${idempotence}
 #  - >
