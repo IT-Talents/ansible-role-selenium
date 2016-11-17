@@ -4,17 +4,9 @@
   vars:
     selenium_server_version: 3.0.1
 
-  # pre task is needed to make sure later apt cache updates doesn't report "changed" for idempotency tests
-  pre_tasks:
-    - name: Update apt cache (if distro is debian based)
-      apt: update_cache=yes
-      when: ansible_os_family == 'Debian'
-      changed_when: False
-      tags: [pre]
-
   roles:
     - role_under_test
 
   post_tasks:
-    - set_fact: selenium_java_version=8
-    - include: check_install.yml
+#   - set_fact: selenium_java_version=8
+#   - include: check_install.yml

@@ -3,6 +3,9 @@
 ###############             PREPARE                   ################
 ######################################################################
 
+- name: Install xvfb
+  package: name={{ selenium_xvfb_package }} state=present
+
 - name: Create selenium directory
   file: "path={{ selenium_server_dir }} state=directory recurse=yes"
 
@@ -51,6 +54,7 @@
     shell: ps -ef |  grep "/bin/sh /usr/bin/xvfb-run /usr/bin/java -client -jar" | grep -v grep
     changed_when: False
   when: selenium_system_manager.stdout == 'sysv'
+  tags: [test]
 
 #######################################################################
 ###############             SYSTEMD                   #################

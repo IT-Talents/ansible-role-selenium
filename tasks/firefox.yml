@@ -5,14 +5,6 @@
 
 # @todo check for firefox installed
 
-- block:
-  - name: Install key package for firefox
-    apt: deb=https://mozilla.debian.net/pkg-mozilla-archive-keyring_1.1_all.deb state=present
-
-  - name: Add apt repository
-    apt_repository: repo='deb http://mozilla.debian.net/ jessie-backports firefox-release' state=present update_cache=yes
-  when: ansible_distribution == 'Debian'
-
 - name: Install firefox from package
   package: name=firefox state=present
 

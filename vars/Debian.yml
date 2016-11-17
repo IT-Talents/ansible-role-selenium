@@ -1,3 +1,3 @@
 ---
 selenium_xvfb_package: xvfb
-selenium_java_package: "openjdk-{{ selenium_java_version }}-jdk"
+selenium_java_package: "openjdk-7-jdk"

@@ -74,7 +74,7 @@ INITS[debian8]="/lib/systemd/systemd"
 declare -A OPTS
 OPTS[ubuntu1604]="--privileged"
 OPTS[ubuntu1404]="--privileged"
-OPTS[ubuntu1204]="--privileged"
+OPTS[ubuntu1204]=""
 OPTS[centos6]="--privileged"
 OPTS[centos7]="--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 OPTS[debian8]="--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
@@ -114,7 +114,7 @@ docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook ${VER
 if [ ${IDEM} -eq 1 ] ; then
     idempotence=$(mktemp)
     echo "second test run for idempotency..."
-    docker exec "$(cat ${container_id})" ansible-playbook /etc/ansible/roles/role_under_test/tests/${ROLE}.yml --skip-tags "test" | tee -a ${idempotence}
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm  ansible-playbook /etc/ansible/roles/role_under_test/tests/${ROLE}.yml | tee -a ${idempotence}
     tail ${idempotence} | grep -q 'changed=0.*failed=0' && (echo 'Idempotence test: pass' && exit 0) || (echo 'Idempotence test: fail' && exit 1)
 fi
 
