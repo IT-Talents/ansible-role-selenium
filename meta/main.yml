@@ -29,4 +29,4 @@ dependencies:
 #  - role: arknoll.firefox
 #    firefox_version: "{{ selenium_firefox_install_version }}"
 #    firefox_release_root_url: 'https://ftp.mozilla.org/pub/mozilla.org/firefox/releases'
-#    when: selenium_firefox_install_mode == 'archive'
+#    when: selenium_firefox_version == 'archive'

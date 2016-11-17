@@ -39,7 +39,7 @@
 # @todo: fix firefox role
 #- name: Install bzip2
 #  package: name=bzip2 state=present update_cache=yes
-#  when: selenium_firefox_install_mode == 'archive'
+#  when: selenium_firefox_version == 'archive'
 
 #- name: Install gtk3 if firefox > 45
 #  package: name=bzip2 state=present

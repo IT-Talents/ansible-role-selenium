@@ -5,7 +5,7 @@
 - name: Install selenium check script
   template:
     src: "../templates/selenium-check.j2"
-    dest: "{{ selenium_install_dir }}/check.sh"
+    dest: "{{ selenium_server_dir }}/check.sh"
     owner: root
     group: root
     mode: 0755
@@ -38,14 +38,14 @@
     register: result
 
   - name: Try starting firefox session
-    shell: "{{ selenium_install_dir }}/check.sh"
+    shell: "{{ selenium_server_dir }}/check.sh"
     register: result_firefox
 
   rescue:
   - debug: var=result verbosity=2
 
   - name: Get log file
-    shell: cat {{ selenium_log }}
+    shell: cat {{ selenium_server_log }}
     register: result_log
 
   - debug: var=result_log.stdout_lines verbosity=0

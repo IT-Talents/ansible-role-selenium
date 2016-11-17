@@ -4,20 +4,20 @@
 ######################################################################
 
 - name: Create selenium directory
-  file: "path={{ selenium_install_dir }} state=directory recurse=yes"
+  file: "path={{ selenium_server_dir }} state=directory recurse=yes"
 
 - name: Create selenium log file
-  file: path={{ selenium_log }} state=touch mode="u=rw,g=rw,o=rw"
+  file: path={{ selenium_server_log }} state=touch mode="u=rw,g=rw,o=rw"
 
 - name: Download Selenium
   get_url:
     url: "{{ selenium_server_download }}"
-    dest: "{{ selenium_install_dir }}/selenium-server-standalone-{{ selenium_server_version }}.jar"
+    dest: "{{ selenium_server_dir }}/selenium-server-standalone-{{ selenium_server_version }}.jar"
 
 - name: Install start script
   template:
     src: "selenium-start.j2"
-    dest: "{{ selenium_install_dir }}/start.sh"
+    dest: "{{ selenium_server_dir }}/start.sh"
     owner: root
     group: root
     mode: 0755
