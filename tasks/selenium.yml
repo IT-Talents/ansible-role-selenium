@@ -1,0 +1,69 @@
+---
+######################################################################
+###############             PREPARE                   ################
+######################################################################
+
+- name: Create selenium directory
+  file: "path={{ selenium_install_dir }} state=directory recurse=yes"
+
+- name: Create selenium log file
+  file: path={{ selenium_log }} state=touch mode="u=rw,g=rw,o=rw"
+
+- name: Download Selenium
+  get_url:
+    url: "{{ selenium_server_download }}"
+    dest: "{{ selenium_install_dir }}/selenium-server-standalone-{{ selenium_server_version }}.jar"
+
+- name: Install start script
+  template:
+    src: "selenium-start.j2"
+    dest: "{{ selenium_install_dir }}/start.sh"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Check system manager
+  shell: pidof systemd > /dev/null && printf "systemd" || printf "sysv"
+  register: selenium_system_manager
+  changed_when: False
+
+######################################################################
+###############             SYSV INIT                 ################
+######################################################################
+
+- block:
+  - name: Install init.d script
+    template:
+      src: "selenium-init-{{ ansible_os_family }}.j2"
+      dest: /etc/init.d/selenium
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Start selenium service if running via sysv
+    shell: /etc/init.d/selenium restart
+    changed_when: False
+    ignore_errors: yes
+    register: selenium_init_start
+
+  - name: Ensure selenium service is running via ps
+    shell: ps -ef |  grep "/bin/sh /usr/bin/xvfb-run /usr/bin/java -client -jar" | grep -v grep
+    changed_when: False
+  when: selenium_system_manager.stdout == 'sysv'
+
+#######################################################################
+###############             SYSTEMD                   #################
+#######################################################################
+
+- block:
+  - name: Install systemd unit file
+    template:
+      src: selenium-unit.j2
+      dest: /etc/systemd/system/selenium.service
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Ensure selenium service is running via systemd
+    service: name=selenium state=started enabled=yes
+  when: selenium_system_manager.stdout == 'systemd'

@@ -1,0 +1,67 @@
+---
+- name: Install curl
+  package: name=curl state=present
+
+- name: Install selenium check script
+  template:
+    src: "../templates/selenium-check.j2"
+    dest: "{{ selenium_install_dir }}/check.sh"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Check java install
+  shell: java -version 2>&1 | awk '/version/{print $NF}' | grep "1.{{ selenium_java_version }}"
+
+- name: Check firefox install
+  shell: firefox --version
+
+- block:
+  - name: Pause cause i did not find a good way to wait for server to be running with systemd unit files
+    pause: seconds=10
+    when: selenium_system_manager.stdout == 'systemd'
+
+  - name: Test selenium server response
+    get_url: url="http://127.0.0.1:4444/wd/hub/status" dest=/dev/null
+    register: result
+
+  - name: Test restart selenium server for sysv
+    shell: /etc/init.d/selenium restart
+    when: selenium_system_manager.stdout == 'sysv'
+
+  - name: Pause cause i did not find a good way to wait for server to be running with systemd unit files
+    pause: seconds=10
+    when: selenium_system_manager.stdout == 'systemd'
+
+  - name: Test selenium server response again
+    get_url: url="http://127.0.0.1:4444/wd/hub/status" dest=/dev/null
+    register: result
+
+  - name: Try starting firefox session
+    shell: "{{ selenium_install_dir }}/check.sh"
+    register: result_firefox
+
+  rescue:
+  - debug: var=result verbosity=2
+
+  - name: Get log file
+    shell: cat {{ selenium_log }}
+    register: result_log
+
+  - debug: var=result_log.stdout_lines verbosity=0
+
+  - name: Get service status via systemd
+    shell: service selenium status
+    when: selenium_system_manager.stdout == 'systemd'
+    register: result_service
+
+  - debug: var=result_service.stdout_lines verbosity=0
+    when: selenium_system_manager.stdout == 'systemd'
+
+  - name: Get ps output
+    shell: ps -x
+    register: result_ps
+
+  - debug: var=result_ps.stdout_lines verbosity=0
+
+  - fail: msg="There was a problem installing and starting selenium, see above output for more info."

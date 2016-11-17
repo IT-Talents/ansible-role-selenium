@@ -4,17 +4,14 @@ selenium_log:                       /opt/selenium/selenium.log
 selenium_install_dir:               /opt/selenium
 selenium_server_version:            3.0.1
 
-
+selenium_firefox_install_mode:      package
 
 # firefox install vars
-selenium_firefox_install_mode:      package
-selenium_firefox_install_version:   48.0.2
-
+#selenium_firefox_install_version:   48.0.2
 # geckodriver install vars
 #selenium_geckodriver_version: '0.11.1'
 #selenium_geckodriver_download_url: 'https://github.com/mozilla/geckodriver/releases/download/v{{ selenium_geckodriver_version }}/geckodriver-v{{ selenium_geckodriver_version }}-linux64.tar.gz'
 #selenium_geckodriver_install_path: /usr/local/bin
-
 # defaults file for selenium
 #selenium_firefox_install_mode: archive
 #selenium_firefox_install_archive_version: '48.0.2'
