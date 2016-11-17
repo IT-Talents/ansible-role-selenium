@@ -8,6 +8,7 @@
 
 - name: Create selenium log file
   file: path={{ selenium_server_log }} state=touch mode="u=rw,g=rw,o=rw"
+  changed_when: false
 
 - name: Download Selenium
   get_url:

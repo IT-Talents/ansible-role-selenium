@@ -1,6 +1,7 @@
 ---
 - name: Install curl
   package: name=curl state=present
+  tags: [test]
 
 - name: Install selenium check script
   template:
@@ -9,37 +10,46 @@
     owner: root
     group: root
     mode: 0755
+  tags: [test]
 
 - name: Check java install
   shell: java -version 2>&1 | awk '/version/{print $NF}' | grep "1.{{ selenium_java_version }}"
+  tags: [test]
 
 - name: Check firefox install
   shell: firefox --version
+  tags: [test]
 
 - block:
   - name: Pause cause i did not find a good way to wait for server to be running with systemd unit files
     pause: seconds=10
     when: selenium_system_manager.stdout == 'systemd'
+    tags: [test]
 
   - name: Test selenium server response
     get_url: url="http://127.0.0.1:4444/wd/hub/status" dest=/dev/null
     register: result
+    tags: [test]
 
   - name: Test restart selenium server for sysv
     shell: /etc/init.d/selenium restart
     when: selenium_system_manager.stdout == 'sysv'
+    tags: [test]
 
   - name: Pause cause i did not find a good way to wait for server to be running with systemd unit files
     pause: seconds=10
     when: selenium_system_manager.stdout == 'systemd'
+    tags: [test]
 
   - name: Test selenium server response again
     get_url: url="http://127.0.0.1:4444/wd/hub/status" dest=/dev/null
     register: result
+    tags: [test]
 
   - name: Try starting firefox session
     shell: "{{ selenium_server_dir }}/check.sh"
     register: result_firefox
+    tags: [test]
 
   rescue:
   - debug: var=result verbosity=2

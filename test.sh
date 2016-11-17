@@ -79,9 +79,6 @@ OPTS[centos6]="--privileged"
 OPTS[centos7]="--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 OPTS[debian8]="--privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro"
 
-container_id=$(mktemp)
-idempotence=$(mktemp)
-
 if [ "${DISTROS[${DISTRO}]}" == "" ] ; then
     echo "unkown distro, available: ubuntu1604, ubuntu1404, ubuntu1204, centos7, centos6, debian8"
     exit 1;
@@ -98,6 +95,7 @@ if [ ${PULL} -eq 1 ] ; then
 fi
 
 echo "creating docker image..."
+container_id=$(mktemp)
 docker run --detach -v /dev/urandom:/dev/random --volume="${PWD}":/etc/ansible/roles/role_under_test:ro ${OPTS[${DISTRO}]} ${DISTROS[${DISTRO}]} "${INITS[${DISTRO}]}" > "${container_id}"
 
 echo "using container id: $(cat ${container_id})"
@@ -113,15 +111,11 @@ fi
 echo "first test run..."
 docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook ${VERBOSE} /etc/ansible/roles/role_under_test/tests/${ROLE}.yml
 
-# Test role idempotence. @todo
-#  - idempotence=$(mktemp)
-#  - sudo docker exec "$(cat ${container_id})" ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml | tee -a ${idempotence}
-#  - >
-#    tail ${idempotence}
-#    | grep -q 'changed=0.*failed=0'
-#    && (echo 'Idempotence test: pass' && exit 0)
-#    || (echo 'Idempotence test: fail' && exit 1)
-#echo "second test run for idempotency..."
-#docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /etc/ansible/roles/role_under_test/tests/test.yml
+if [ ${IDEM} -eq 1 ] ; then
+    idempotence=$(mktemp)
+    echo "second test run for idempotency..."
+    docker exec "$(cat ${container_id})" ansible-playbook /etc/ansible/roles/role_under_test/tests/${ROLE}.yml --skip-tags "test" | tee -a ${idempotence}
+    tail ${idempotence} | grep -q 'changed=0.*failed=0' && (echo 'Idempotence test: pass' && exit 0) || (echo 'Idempotence test: fail' && exit 1)
+fi
 
 echo "used container id: $(cat ${container_id})"
