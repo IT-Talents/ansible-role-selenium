@@ -2,13 +2,13 @@
 services: docker
 
 env:
-  - { distro: centos6,    role: test_selenium2 }
-  - { distro: centos7,    role: test_selenium2 }
+#  - { distro: centos6,    role: test_selenium2 }
+#  - { distro: centos7,    role: test_selenium2 }
 
-  - { distro: debian8,    role: test_selenium3 }
+#  - { distro: debian8,    role: test_selenium3 }
   - { distro: ubuntu1204, role: test_selenium3 }
-  - { distro: ubuntu1404, role: test_selenium3 }
-  - { distro: ubuntu1604, role: test_selenium3 }
+#  - { distro: ubuntu1404, role: test_selenium3 }
+#  - { distro: ubuntu1604, role: test_selenium3 }
 
 script:
   - './test.sh -p -i -s -r ${role} -o ${distro}'
