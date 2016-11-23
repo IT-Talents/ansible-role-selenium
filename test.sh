@@ -114,7 +114,7 @@ docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook ${VER
 if [ ${IDEM} -eq 1 ] ; then
     idempotence=$(mktemp)
     echo "second test run for idempotency..."
-    docker exec --tty "$(cat ${container_id})" env TERM=xterm  ansible-playbook /etc/ansible/roles/role_under_test/tests/${ROLE}.yml | tee -a ${idempotence}
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook ${VERBOSE} /etc/ansible/roles/role_under_test/tests/${ROLE}.yml | tee -a ${idempotence}
     tail ${idempotence} | grep -q 'changed=0.*failed=0' && (echo 'Idempotence test: pass' && exit 0) || (echo 'Idempotence test: fail' && exit 1)
 fi
 
