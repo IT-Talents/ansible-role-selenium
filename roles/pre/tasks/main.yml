@@ -1,30 +1,30 @@
 ---
 # set some vars based on selenium and os versions
-#- set_fact:
-#    selenium_java_version: 7
-#    selenium_install_geckodriver: no
-#  when: selenium_server_version[0:1] == '2'
-#
-#- set_fact:
-#    selenium_java_version: 8
-#    selenium_install_geckodriver: yes
-#  when: selenium_server_version[0:1] == '3'
-#
-#- include_vars: "../../../vars/{{ ansible_os_family }}.yml"
+- set_fact:
+    selenium_java_version: 7
+    selenium_install_geckodriver: no
+  when: selenium_server_version[0:1] == '2'
+
+- set_fact:
+    selenium_java_version: 8
+    selenium_install_geckodriver: yes
+  when: selenium_server_version[0:1] == '3'
+
+- include_vars: "../../../vars/{{ ansible_os_family }}.yml"
 
 # normally the external role doesn't support some java versions for certain distros, this fixes it
-#- name: Add ubuntu ppa for installing different openjdk versions
-#  apt_repository: repo='ppa:openjdk-r/ppa'
-#  when: ansible_distribution == 'Ubuntu'
-#
-#- name: Add debian ppa for installing openjdk 8
-#  apt_repository: repo='deb http://ftp.debian.org/debian jessie-backports main' state=present
-#  when: selenium_server_version[0:1] == '3' and ansible_distribution == 'Debian'
+- name: Add ubuntu repo for installing different openjdk versions
+  apt_repository: repo='ppa:openjdk-r/ppa'
+  when: ansible_distribution == 'Ubuntu'
 
-#- name: Install key package for firefox
-#  apt: deb=https://mozilla.debian.net/pkg-mozilla-archive-keyring_1.1_all.deb state=present
-#  when: ansible_distribution == 'Debian'
-#
-#- name: Add apt repository
-#  apt_repository: repo='deb http://mozilla.debian.net/ jessie-backports firefox-release' state=present
-#  when: ansible_distribution == 'Debian'
+- name: Add debian repo for installing openjdk 8
+  apt_repository: repo='deb http://ftp.debian.org/debian jessie-backports main' state=present
+  when: selenium_server_version[0:1] == '3' and ansible_distribution == 'Debian'
+
+- name: Install mozilla key package for firefox
+  apt: deb=https://mozilla.debian.net/pkg-mozilla-archive-keyring_1.1_all.deb state=present
+  when: ansible_distribution == 'Debian'
+
+- name: Add apt repository
+  apt_repository: repo='deb http://mozilla.debian.net/ jessie-backports firefox-release' state=present
+  when: ansible_distribution == 'Debian'

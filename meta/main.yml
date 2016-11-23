@@ -21,7 +21,7 @@ galaxy_info:
   categories:
   - web
 dependencies:
-#  - role: '../roles/pre'
+  - role: '../roles/pre'
   - role: geerlingguy.java
-#    java_packages: "openjdk-7-jdk"
-#    java_packages: "{{ selenium_java_package }}"
+    java_packages:
+      - "{{ selenium_java_package }}"

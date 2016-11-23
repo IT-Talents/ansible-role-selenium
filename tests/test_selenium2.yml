@@ -14,5 +14,5 @@
     - role_under_test
 
   post_tasks:
-#    - set_fact: selenium_java_version=7
-#    - include: check_install.yml
+    - set_fact: selenium_java_version=7
+    - include: check_install.yml

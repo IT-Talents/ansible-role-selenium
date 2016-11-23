@@ -1,6 +1,6 @@
 ---
-#- include: firefox.yml
-#- include: selenium.yml
+- include: firefox.yml
+- include: selenium.yml
 
 ##############################################
 #                 CHROME                     #

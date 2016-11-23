@@ -8,10 +8,11 @@
     - name: Update apt cache.
       apt: update_cache=yes
       when: ansible_os_family == 'Debian'
+      changed_when: false
 
   roles:
     - role_under_test
 
-#  post_tasks:
-#   - set_fact: selenium_java_version=8
-#   - include: check_install.yml
+  post_tasks:
+   - set_fact: selenium_java_version=8
+   - include: check_install.yml

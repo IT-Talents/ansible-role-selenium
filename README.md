@@ -2,30 +2,11 @@
 
 Set up selenium and Firefox for running selenium tests. Following setups are supported:
 
-Debian 8:
-
-- @latest: firefox via http://mozilla.debian.net/ (current 49) with selenium 3.0 and java 8
-- @official: firefox via official repo (current XXX) with selenium XXX and java XXX
-
-Ubuntu 16.04:
-
-- @official: firefox via official repo (current 49.0.2) with selenium 3.0 and java 8
-
-Ubuntu 14.04:
-
-- @official: firefox via official repo (current 49.0.2) with selenium 3.0 and java 8
-
-Ubuntu 12.04:
-
-- @official: firefox via official repo (current 49.0.2) with selenium 3.0 and java 8
-
-Centos 7:
-
-- @official: firefox via official repo (current 45.4.0) with selenium 2.53.1 and java 7
-- @version: every version via tar archive from https://ftp.mozilla.org (FF > 45 installs gtk+3) 
-  - FF < 48: java 7 with selenium server 2.53.1
-  - FF >= 48: java 8 with selenium server 3.0.1
-
+|         | Firefox                 | Selenium | Java |
+| ------- | ----------------------- | -------- | ---- |
+| Ubuntu  | latest via apt          | 3.x      | 8    |
+| Debian  | latest via mozilla repo | 3.x      | 8    |
+| Centos  | 45.x via official repo  | 2.53.1   | 7    | 
 
 #### Requirements
 
