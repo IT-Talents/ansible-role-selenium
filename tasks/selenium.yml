@@ -3,6 +3,14 @@
 ###############             PREPARE                   ################
 ######################################################################
 
+- set_fact:
+    selenium_xvfb_package: xvfb
+  when: ansible_os_family == 'Debian'
+
+- set_fact:
+    selenium_xvfb_package: xorg-x11-server-Xvfb
+  when: ansible_os_family == 'RedHat'
+
 - name: Install xvfb
   package: name={{ selenium_xvfb_package }} state=present
 
