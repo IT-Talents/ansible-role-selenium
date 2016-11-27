@@ -1,79 +1,22 @@
 ---
+- set_fact:
+    selenium_install_geckodriver: no
+    selenium_java_version: 7
+  when: selenium_server_version[0:1] == '2'
+
+- set_fact:
+    selenium_install_geckodriver: yes
+    selenium_java_version: 8
+  when: selenium_server_version[0:1] == '3'
+
+- set_fact:
+    selenium_xvfb_package: xvfb
+  when: ansible_os_family == 'Debian'
+
+- set_fact:
+    selenium_xvfb_package: xorg-x11-server-Xvfb
+  when: ansible_os_family == 'RedHat'
+
 - include: firefox.yml
+#- include: chrome.yml
 - include: selenium.yml
-
-##############################################
-#                 CHROME                     #
-##############################################
-
-# Chrome for Ubuntu 12.04
-#- name: Install Chromium (if configured, Ubuntu < 13)
-#  package: name=chromium-browser
-#  when:
-#    - ansible_distribution == 'Ubuntu'
-#    - ansible_distribution_version|int < 13
-#    - selenium.chrome.install
-#  tags: [configuration, selenium, selenium-chrome]
-#
-## Chrome for CentOS 6
-#- name: Download chrome installer (if configured, CentOS < 7)
-#  get_url:
-#    url: "http://chrome.richardlloyd.org.uk/install_chrome.sh"
-#    dest: "/tmp/install_chrome.sh"
-#    mode: 0755
-#    validate_certs: no
-#  when:
-#    - selenium.chrome.install
-#    - ansible_distribution == 'CentOS'
-#    - ansible_distribution_version|int < 7
-#  tags: [configuration, selenium, selenium-chrome]
-#
-#- name: Execute chrome installer (if configured, CentOS < 7)
-#  script: /tmp/install_chrome.sh -f
-#  when:
-#    - selenium.chrome.install
-#    - ansible_distribution == 'CentOS'
-#    - ansible_distribution_version|int < 7
-#  tags: [configuration, selenium, selenium-chrome]
-
-# Chrome for all other debian-based distros
-#- name: Install Chrome (if configured, Debian)
-#  apt:
-#    deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-#    state: present
-#  when:
-#    - selenium.chrome.install
-#    - ansible_os_family == 'Debian'
-#    - (ansible_distribution != 'Ubuntu' or ansible_distribution_version|int > 12)
-#  tags: [configuration, selenium, selenium-chrome]
-#
-## Chrome for all other RHEL based distros
-#- name: Install Chrome (if configured, RedHat)
-#  yum:
-#    name: https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-#    state: present
-#  when:
-#    - selenium.chrome.install
-#    - ansible_os_family == 'RedHat'
-#    - (ansible_distribution != 'CentOS' or ansible_distribution_version|int > 6)
-#  tags: [configuration, selenium, selenium-chrome]
-#
-## Chrome driver install
-#- name: Get the latest release for chromedriver
-#  uri:
-#    url: http://chromedriver.storage.googleapis.com/LATEST_RELEASE
-#    return_content: yes
-#  register: chromedriver_latest
-#  when: selenium.chrome.install
-#  tags: [configuration, selenium, selenium-chrome]
-#
-#- name: Install chromedriver
-#  unarchive:
-#    src: "http://chromedriver.storage.googleapis.com/{{ chromedriver_latest.content | trim }}/chromedriver_linux64.zip"
-#    dest: /usr/bin
-#    mode: 0755
-#    copy: no
-#  when: selenium.chrome.install
-#  tags: [configuration, selenium, selenium-chrome]
-
-

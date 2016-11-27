@@ -19,10 +19,12 @@ None
 
 #### Variables
 
-* `selenium_server_dir`: [default: `/opt/selenium`] Install directory
-* `selenium_server_log`: [default: `/opt/selenium/selenium.log`] Log file
-* `selenium_install_firefox`: [default: `yes`] Whether to install FireFox
-* `selenium_install_chrome`: [default: `no`] Whether to install Google Chrome
+* `selenium_server_version`:       [default: `3.0.1`] Selenium server version
+* `selenium_server_dir`:           [default: `/opt/selenium`] Base dir where all binaries are installed
+* `selenium_server_log`:           [default: `/opt/selenium/selenium.log`] Selenium server log file
+* `selenium_server_download`:      [default: `http://selenium-release.storage.googleapis.com/{{ selenium_server_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_server_version }}.jar`] Download url for selenium server
+* `selenium_geckodriver_version`:  [default: `0.11.1`] Geckodriver version to install
+* `selenium_geckodriver_download`: [default: `https://github.com/mozilla/geckodriver/releases/download/v{{ selenium_geckodriver_version }}/geckodriver-v{{ selenium_geckodriver_version }}-linux64.tar.gz`] Download url for gecko driver
 
 ## Dependencies
 

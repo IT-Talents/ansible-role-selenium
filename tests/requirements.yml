@@ -1,1 +1,2 @@
-- src: geerlingguy.java
+- src: https://github.com/MassiveHiggsField/ansible-role-java/archive/master.tar.gz
+  name: ansible-role-java

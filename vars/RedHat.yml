@@ -1,3 +1,0 @@
----
-selenium_xvfb_package: xorg-x11-server-Xvfb
-selenium_java_package: "java-1.{{ selenium_java_version }}.0-openjdk"
