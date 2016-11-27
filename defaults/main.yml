@@ -1,6 +1,5 @@
 ---
 selenium_server_version:            3.0.1
-
 selenium_server_dir:                /opt/selenium
 selenium_server_log:                /opt/selenium/selenium.log
 selenium_server_download:           "http://selenium-release.storage.googleapis.com/{{ selenium_server_version | regex_replace('\\.[0-9]+$', '') }}/selenium-server-standalone-{{ selenium_server_version }}.jar"
