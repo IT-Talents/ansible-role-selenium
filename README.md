@@ -1,12 +1,17 @@
-## selenium [![Build Status](https://travis-ci.org/arknoll/ansible-role-selenium.svg?branch=master)](https://travis-ci.org/arknoll/ansible-role-selenium)
+## selenium [![Build Status](https://travis-ci.org/MassiveHiggsField/ansible-role-selenium.svg?branch=master)](https://travis-ci.org/MassiveHiggsField/ansible-role-selenium)
 
-Set up selenium and Firefox for running selenium tests. Following setups are supported:
+Sets up a selenium server running via xvfb and optionally installs firefox and chrome. Everything will be setup pretty automatically, because there are some version restrictions to which 
+selenium server versions runs best on which jdk and operating system. Selenium server since version 3 requires jdk 8 and the geckodriver for running firefox. The geckodriver only fully supports
+firefox versions 48 and above. All rhel based distributions (like centos) only run firefox 45.x and jdk 7, but can't be easily upgraded (depdencies with gtk3 etc...). Following setups are 
+supported right now:
 
-|         | Firefox                 | Selenium | Java |
-| ------- | ----------------------- | -------- | ---- |
-| Ubuntu  | latest via apt          | 3.x      | 8    |
-| Debian  | latest via mozilla repo | 3.x      | 8    |
-| Centos  | 45.x via official repo  | 2.53.1   | 7    | 
+|                             | Firefox                 | Chrome | Selenium | JDK  |
+| --------------------------- | ----------------------- | ------ | -------- | ---- |
+| Ubuntu 12.04, 14.04, 16.04  | latest via apt          |        | 3.x      | 8    |
+| Debian 8                    | latest via mozilla repo |        | 3.x      | 8    |
+| Centos 6/7                  | 45.x via official repo  |        | 2.53.1   | 7    | 
+
+If additional setups are needed, open an issue. 
 
 #### Requirements
 
@@ -16,16 +21,12 @@ None
 
 * `selenium_server_dir`: [default: `/opt/selenium`] Install directory
 * `selenium_server_log`: [default: `/opt/selenium/selenium.log`] Log file
-* `selenium_server_version`: [default: `3.0.1`] Install version
-* `selenium_install_firefox`: [default: `no`] Whether to install FireFox
-* `selenium_install_chrome`: [default: `yes`] Whether to install Google Chrome
+* `selenium_install_firefox`: [default: `yes`] Whether to install FireFox
+* `selenium_install_chrome`: [default: `no`] Whether to install Google Chrome
 
 ## Dependencies
 
-* `telusdigital.apt-repository`
-* `jnv.debian-backports`
 * `geerlingguy.java`
-* `arknoll.firefox`
 
 #### Example
 
@@ -33,10 +34,13 @@ None
 ---
 - hosts: all
   roles:
-  - selenium
+  - role: selenium
+    selenium_server_log: /vagrant/build/logs/
 ```
 
 #### Start/Stop/Restart Selenium
+
+via systemd:
 
 ```
 $ service selenium start
@@ -44,21 +48,13 @@ $ service selenium stop
 $ service selenium restart
 ```
 
-#### Known issue with Firefox
-
-For some OS combinations the package manager version of Firefox 
-doesn't work appropriately with Selenium. In these circumstances 
-you may see an error like:
+via initv
 
 ```
-WebDriver\Exception\UnknownError: Unable to connect to host 127.0.0.1 on port 7055 after 45000 ms. Firefox console output:
+$ /etc/init.d/selenium start
+$ /etc/init.d/selenium stop
+$ /etc/init.d/selenium restart
 ```
-
-Chrome and chromedriver don't appear to have this issue. If 
-possible, use Chrome. If you still want to use firefox, then 
-I suggest using https://galaxy.ansible.com/arknoll/firefox/ 
-to install an older version of firefox. (38.0 worked for me 
-on Ubuntu 16.04).
 
 #### License and Author
 
