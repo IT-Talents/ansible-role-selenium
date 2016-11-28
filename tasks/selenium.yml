@@ -35,7 +35,7 @@
     mode: 0755
 
 - name: Check system manager
-  shell: stat /proc/1/exe -c ' File: %N' | grep systemv > /dev/null && printf "systemd" || printf "sysv"
+  shell: 'stat /proc/1/exe -c " File: %N" | grep systemv > /dev/null && printf "systemd" || printf "sysv"'
   #shell: pidof systemd > /dev/null && printf "systemd" || printf "sysv"
   register: selenium_system_manager
   changed_when: False
