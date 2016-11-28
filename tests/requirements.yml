@@ -1,2 +1,2 @@
 - src: https://github.com/MassiveHiggsField/ansible-role-java/archive/master.tar.gz
-  name: ansible-role-java
+  name: MassiveHiggsField.ansible-role-java
