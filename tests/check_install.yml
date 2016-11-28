@@ -36,6 +36,11 @@
     when: selenium_system_manager == 'sysv'
     tags: [test]
 
+  - name: Test restart selenium server for systemd
+    service: name=selenium state=restarted
+    when: selenium_system_manager == 'systemd'
+    tags: [test]
+
   - name: Pause cause i did not find a good way to wait for server to be running with systemd unit files
     pause: seconds=10
     when: selenium_system_manager == 'systemd'
