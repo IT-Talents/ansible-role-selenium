@@ -40,7 +40,7 @@
 
 - set_fact:
     selenium_system_manager: sysv
-  when: ansible_os_family == 'Ubuntu' and ansible_distribution_version[0:4] != '16.04'
+  when: ansible_distribution == 'Ubuntu' and ansible_distribution_version[0:4] != '16.04'
 
 ######################################################################
 ###############             SYSV INIT                 ################
