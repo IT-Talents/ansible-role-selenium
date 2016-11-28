@@ -7,3 +7,5 @@ selenium_server_download:           "http://selenium-release.storage.googleapis.
 selenium_geckodriver_version:       0.11.1
 selenium_geckodriver_dir:           /usr/local/bin
 selenium_geckodriver_download:      "https://github.com/mozilla/geckodriver/releases/download/v{{ selenium_geckodriver_version }}/geckodriver-v{{ selenium_geckodriver_version }}-linux64.tar.gz"
+
+selenium_system_manager:            systemd

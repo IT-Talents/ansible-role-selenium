@@ -34,11 +34,13 @@
     group: root
     mode: 0755
 
-- name: Check system manager
-  shell: 'stat /proc/1/exe -c " File: %N" | grep systemv > /dev/null && printf "systemd" || printf "sysv"'
-  #shell: pidof systemd > /dev/null && printf "systemd" || printf "sysv"
-  register: selenium_system_manager
-  changed_when: False
+- set_fact:
+    selenium_system_manager: sysv
+  when: ansible_os_family == 'RedHat' and ansible_distribution_version[0:1] == '6'
+
+- set_fact:
+    selenium_system_manager: sysv
+  when: ansible_os_family == 'Ubuntu' and ansible_distribution_version[0:4] != '16.04'
 
 ######################################################################
 ###############             SYSV INIT                 ################
@@ -62,7 +64,7 @@
   - name: Ensure selenium service is running via ps
     shell: ps -ef |  grep "/bin/sh /usr/bin/xvfb-run /usr/bin/java -client -jar" | grep -v grep
     changed_when: False
-  when: selenium_system_manager.stdout == 'sysv'
+  when: selenium_system_manager == 'sysv'
   tags: [test]
 
 #######################################################################
@@ -80,4 +82,4 @@
 
   - name: Ensure selenium service is running via systemd
     service: name=selenium state=started enabled=yes
-  when: selenium_system_manager.stdout == 'systemd'
+  when: selenium_system_manager == 'systemd'

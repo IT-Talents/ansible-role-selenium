@@ -23,7 +23,7 @@
 - block:
   - name: Pause cause i did not find a good way to wait for server to be running with systemd unit files
     pause: seconds=10
-    when: selenium_system_manager.stdout == 'systemd'
+    when: selenium_system_manager == 'systemd'
     tags: [test]
 
   - name: Test selenium server response
@@ -33,12 +33,12 @@
 
   - name: Test restart selenium server for sysv
     shell: /etc/init.d/selenium restart
-    when: selenium_system_manager.stdout == 'sysv'
+    when: selenium_system_manager == 'sysv'
     tags: [test]
 
   - name: Pause cause i did not find a good way to wait for server to be running with systemd unit files
     pause: seconds=10
-    when: selenium_system_manager.stdout == 'systemd'
+    when: selenium_system_manager == 'systemd'
     tags: [test]
 
   - name: Test selenium server response again
@@ -62,11 +62,11 @@
 
   - name: Get service status via systemd
     shell: service selenium status
-    when: selenium_system_manager.stdout == 'systemd'
+    when: selenium_system_manager == 'systemd'
     register: result_service
 
   - debug: var=result_service.stdout_lines verbosity=0
-    when: selenium_system_manager.stdout == 'systemd'
+    when: selenium_system_manager == 'systemd'
 
   - name: Get ps output
     shell: ps -x

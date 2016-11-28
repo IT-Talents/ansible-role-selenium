@@ -21,6 +21,7 @@ galaxy_info:
   categories:
   - web
 dependencies:
+  #- role: cmprescott.chrome
   - src: https://github.com/MassiveHiggsField/ansible-role-java/archive/master.tar.gz
     name: MassiveHiggsField.ansible-role-java
     java_packages:
