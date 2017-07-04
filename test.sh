@@ -55,7 +55,7 @@ if [ "${DISTRO}" == "" ] ; then
     exit 1;
 fi
 
-declare -A DISTROS
+declare -a DISTROS
 DISTROS[ubuntu1604]="geerlingguy/docker-ubuntu1604-ansible:latest"
 DISTROS[ubuntu1404]="geerlingguy/docker-ubuntu1404-ansible:latest"
 DISTROS[ubuntu1204]="geerlingguy/docker-ubuntu1204-ansible:latest"
@@ -63,7 +63,7 @@ DISTROS[centos6]="geerlingguy/docker-centos6-ansible:latest"
 DISTROS[centos7]="geerlingguy/docker-centos7-ansible:latest"
 DISTROS[debian8]="geerlingguy/docker-debian8-ansible:latest"
 
-declare -A INITS
+declare -a INITS
 INITS[ubuntu1604]="/lib/systemd/systemd"
 INITS[ubuntu1404]="/sbin/init"
 INITS[ubuntu1204]="/sbin/init"
@@ -71,7 +71,7 @@ INITS[centos6]="/sbin/init"
 INITS[centos7]="/usr/lib/systemd/systemd"
 INITS[debian8]="/lib/systemd/systemd"
 
-declare -A OPTS
+declare -a OPTS
 OPTS[ubuntu1604]="--privileged"
 OPTS[ubuntu1404]="--privileged"
 OPTS[ubuntu1204]=""
